@@ -1,0 +1,6 @@
+jsorg/
+screenshots/
+training/
+static/train
+# ignore python virtualenv
+myenv/

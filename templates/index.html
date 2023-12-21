@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>training image labling tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/beer.min.css') }}">
+    <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/axios.min.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/alphine.min.js') }}"></script>
+</head>
+<body>
+  <main class="responsive" hx-get="/get_images" hx-target="#grid" hx-trigger="load">
+    <div class="grid" id="grid">
+      <!-- Dynamic content will be inserted here -->
+    </div>
+  </main>  
+
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+</html>

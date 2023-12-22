@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/beer.min.css') }}">
+  <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/axios.min.js') }}"></script>
+  <script defer src="{{ url_for('static', filename='js/alphine.min.js') }}"></script>
+  <!-- <script   type="module" src="{{ url_for('static', filename='js/beer.min.js') }}"></script>
+  <script   type="module" src="{{ url_for('static', filename='js/material-dynamic-colors.min.js') }}"></script> -->
+</head>
+
+<body class="surface-container-lowest dark">
+  {% include 'header.html' %}
+  <main class="responsive">
+    <header class="surface-container-lowest">
+      <nav>
+        <h5 class="max">Test</h5>
+      </nav>
+    </header>
+    <main id="counter" hx-get="/random_image" hx-swap="innerHTML"
+    hx-trigger="pageLoaded" x-transition>
+  </main>
+  </main>
+  <script src="{{ url_for('static', filename='js/index.js') }}"></script>
+</body>
+
+</html>

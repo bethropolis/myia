@@ -1,0 +1,14 @@
+<nav class="left" x-data="{ page: '{{ page }}' }">
+    <a href="/" x-bind:class=" page=== 'index' ? 'active' : ''">
+      <i>exercise</i>
+      <div>train</div>
+    </a>
+    <a href="/test" x-bind:class="page === 'test' ? 'active' : ''">
+      <i>science</i>
+      <div>test</div>
+    </a>
+    <a>
+      <i>share</i>
+      <div>share</div>
+    </a>
+  </nav>

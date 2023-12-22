@@ -1,19 +1,20 @@
-{% for image_url in images %}
-<div class="s6 m4 l3">
+{% for image_url,title in images %}
+<div class="s6 m4 l3"  x-data="{ unlabled: true }" x-show="unlabled">
   <article class="no-padding border">
     <img class="responsive medium" loading="lazy" src="{{ image_url }}">
     <div class="absolute bottom left right padding bottom-shadow white-text">
       <nav>
-        <h6>Title</h6>
+        <h6  style="width:120px;" >{{ title }}</h6>
         <div class="max"></div>
-        <button class="circle transparent" @click="label_bad('{{ image_url }}')">
-          <i>close</i>
+        <button class="circle transparent" @click="label_bad('{{ image_url }}','train')" x-on:click="unlabled = false">
+          <i>thumb_down</i>
         </button>
-        <button class="circle transparent" @click="label_good('{{ image_url }}')">
-          <i>check</i>
+        <button class="circle transparent" @click="label_good('{{ image_url }}','train')" x-on:click="unlabled = false">
+          <i>thumb_up</i>
         </button>
       </nav>
-    </div>
-  </article>
-</div>
+    </div>    
+  </article> 
+</div>  
 {% endfor %}
+

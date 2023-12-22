@@ -2,7 +2,7 @@ from PIL import Image
 import os
 
 # Define the directory where your screenshots are stored
-image_dir = 'jsorg'
+input_dir = 'data/images'
 
 # Define the output directory for resized images
 output_dir = 'training/images'
@@ -15,10 +15,10 @@ target_width = 200  # Change this to your desired width
 target_height = 150  # Change this to your desired height
 
 # Loop through all images in the directory
-for filename in os.listdir(image_dir):
+for filename in os.listdir(input_dir):
     if filename.endswith(".png") or filename.endswith(".jpg"):  # Check for image files
-        img_path = os.path.join(image_dir, filename)
-        output_path = os.path.join(output_dir, f"{image_dir}_{filename}")
+        img_path = os.path.join(input_dir, filename)
+        output_path = os.path.join(output_dir, filename)
         
         # Check if the output file already exists
         if os.path.exists(output_path):

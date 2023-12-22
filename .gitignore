@@ -1,6 +1,14 @@
 jsorg/
 screenshots/
 training/
+data/**/*.png
 static/train
 # ignore python virtualenv
 myenv/
+
+
+# ignore */bad/* and */good/* folders
+**/bad/**
+**/good/**
+
+__pycache__/

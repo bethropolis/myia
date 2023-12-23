@@ -13,3 +13,4 @@ myenv/
 
 __pycache__/
 model/image_model/
+static/graph.png

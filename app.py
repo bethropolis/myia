@@ -1,12 +1,15 @@
-from flask import Flask, render_template, request, send_from_directory, make_response
+from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
 from predict import predict_image_class
+from validation import evaluate_and_visualize_model
 import os
 import shutil
 import json
 import random
 
+
 app = Flask(__name__)
 
+models_dir = 'model/image_model'
 training_folder = 'training'   
 test_image_dir = 'training/images'
 train_image_dir = 'training/train'
@@ -36,7 +39,14 @@ def create_directory(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
     
- 
+def get_models():
+    models = []
+    for root, dirs, files in os.walk(models_dir):
+        for file in files:
+            if file.lower().endswith(('.keras', '.h5')):
+                models.append(file)
+    return models
+     
 # Function to load labeled images from JSON file
 def load_labeled_images():
     labeled_images = []
@@ -49,7 +59,7 @@ def load_labeled_images():
 # Route to send images to frontend
 @app.route('/')
 def index():
-    return render_template('index.html', page='index')
+    return render_template('train.html', page='index')
 
 
 @app.route("/test")
@@ -142,8 +152,33 @@ def random_image():
             prediction = round((predict_image_class(image) * 100),2)
             response_data = {'image': image, 'prediction': prediction}
             return render_template('random_image_template.html', data=response_data)    
+
+
+
+# route to get available models
+@app.route('/models')
+def get_available_models():
+    models = get_models()
+    return jsonify(models)
+
+   
+# Route to get test validation of models
+@app.route('/validation')
+def test_validation():
+    models = get_models()
+    choosen_model = request.args.get('model', default = models[0], type = str)
+    return render_template('validation.html', models=models, page='validation', choosen_model=choosen_model)
+
+# route to get validation results
+@app.route('/validation_results', methods=['POST'])
+async def get_validation_results():
+    model = request.form['model']
+    model_path = os.path.join(models_dir, model)
+    temperature = request.form['temperature']
     
-        
+    graph_image = evaluate_and_visualize_model(model_path, label_good_dir, label_bad_dir)
+    return render_template('validation_results.html', graph_image=graph_image)
+
 
 @app.route('/training/<path:filename>')
 def serve_training_images(filename):

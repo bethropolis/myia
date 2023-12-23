@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>training image labling tool</title>
+  <title>{% block title %} {% endblock %}</title>
+  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/beer.min.css') }}">
   <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
   <script defer src="{{ url_for('static', filename='js/axios.min.js') }}"></script>
@@ -13,32 +14,8 @@
 
 <body class="surface-container-lowest dark">
   {% include 'header.html' %}
-  <main class="responsive">
-    <header class="surface-container-lowest">
-      <nav>
-        <h5 class="max">Training image labling tool</h5>
-        <div class="large-space row" id="counter" style="width:80px;" hx-get="/get_counts" hx-swap="innerHTML"
-          hx-trigger="pageLoaded"></div>
-      </nav>
-    </header>
-    <main hx-get="/get_images" hx-target="#grid" hx-trigger="load">
-      <div class="grid" id="grid" x-transition>
-        <div class="medium-height middle-align center-align s12 surface-container-lowest">
-          <div class="center-align" >
-            <progress class="circle large"></progress>
-            <h6 class="max">Loading...</h6>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="center-align middle-align small-height">
-        <progress class='htmx-indicator circle small' />
-      </div>
-
-
-    </main>
-  </main>
+  {% block content %}
+  {% endblock %}
   <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 

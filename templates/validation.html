@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+
+{% block title %}evaluation {% endblock %}
+
+
+{% block content %}
+
+<main class="responsive max" style="padding: 0; padding-inline-start: var(---padding);">
+    <header class="responsive surface-container-lowest" x-data="{open: false}"
+        style="border-bottom: 1px solid var(--outline);border-right: 1px solid var(--outline);">
+        <h5 class="medium small-padding" style="margin-block-end: 0;">Evaluation</h5>
+    </header>
+    <div class="grid  medium" style="height: calc(100dvh - 60px);margin-block-start: 0;">
+        <div id="result" class="s8 middle-align center-align vertical">
+            <div class="image ultra-width">
+                <img src="{{ url_for('static', filename='images/graph.png') }}" alt="evaluation results" class="responsive">
+            </div>
+            <span class="bold medium medium-space">previous test result</span>
+        </div>
+        
+        <div class="s4 border">
+            {% include 'validation_settings.html' %}
+        </div>
+    </div>
+</main>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+
+{% block title %}Train{% endblock %}
+
+
+{% block content %}
+
+<main class="responsive">
+    <header class="surface-container-lowest">
+      <nav>
+        <h5 class="max">Training image labling tool</h5>
+        <div class="large-space row" id="counter" style="width:80px;" hx-get="/get_counts" hx-swap="innerHTML"
+          hx-trigger="pageLoaded"></div>
+      </nav>
+    </header>
+    <main hx-get="/get_images" hx-target="#grid" hx-trigger="load">
+      <div class="grid" id="grid" x-transition>
+        <div class="medium-height middle-align center-align s12 surface-container-lowest">
+          <div class="center-align" >
+            <progress class="circle large"></progress>
+            <h6 class="max">Loading...</h6>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="center-align middle-align small-height">
+        <progress class='htmx-indicator circle small' />
+      </div>
+
+
+    </main>
+  </main>
+{% endblock %}

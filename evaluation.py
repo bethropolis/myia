@@ -24,8 +24,9 @@ for directory in [test_good_dir, test_bad_dir]:
         prediction = model.predict(img)[0][0]  # Extract the prediction value
         predicted_class = 1 if prediction >= 0.5 else 0  # Threshold for binary classification
 
-        # Print the results
+        # Print the results in the terminal
         print(f"Image: {img_path}")
-        print(f"Predicted class: {predicted_class}")
+        print(f"Predicted class: {'Good' if predicted_class == 1 else 'Bad'}")
         print(f"Prediction score: {prediction:.4f}")
         print("----------------------------------")
+

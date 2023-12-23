@@ -1,5 +1,13 @@
 {% for image_url,title in images %}
-<div class="s6 m4 l3"  x-data="{ unlabled: true }" x-show="unlabled">
+<div class="s6 m4 l3"  x-data="{ unlabled: true }" x-show="unlabled"
+{% if loop.last %}
+hx-get="/get_images?offset={{ offset }}"
+hx-trigger="revealed"
+hx-swap="afterend settle:1s"
+hx-target="this"
+hx-indicator=".htmx-indicator"
+{% endif %}
+ >
   <article class="no-padding border">
     <img class="responsive medium" loading="lazy" src="{{ image_url }}">
     <div class="absolute bottom left right padding bottom-shadow white-text">

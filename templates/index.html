@@ -22,15 +22,21 @@
       </nav>
     </header>
     <main hx-get="/get_images" hx-target="#grid" hx-trigger="load">
-      <div class="grid" id="grid">
+      <div class="grid" id="grid" x-transition>
         <div class="medium-height middle-align center-align s12 surface-container-lowest">
-          <div class="center-align">
+          <div class="center-align" >
             <progress class="circle large"></progress>
             <h6 class="max">Loading...</h6>
           </div>
         </div>
 
       </div>
+
+      <div class="center-align middle-align small-height">
+        <progress class='htmx-indicator circle small' />
+      </div>
+
+
     </main>
   </main>
   <script src="{{ url_for('static', filename='js/index.js') }}"></script>

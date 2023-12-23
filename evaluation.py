@@ -4,7 +4,7 @@ from PIL import Image
 import os
 
 # Load the saved model
-model = load_model('my_image_classifier.keras')
+model = load_model('model/image_model/my_image_classifier.keras')
 
 # Define paths to your labeled 'good' and 'bad' test image directories
 test_good_dir = 'model/evaluation/good'

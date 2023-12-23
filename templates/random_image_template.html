@@ -4,31 +4,34 @@
             <img src="{{ data['image']}}" style="height: 300px; width: 400px">
         </div>
 
-        <div class="score text-center medium-line medium-text bold  s12"
-            x-bind:class="{{ data['prediction'] }} > 50 ? 'green-text' : 'error-text'">
-            {{ data['prediction'] }}%
+        <div class="score text-center medium-line medium-text bold  s12">
+            <span class="">prediction score:</span>
+           <span
+            x-bind:class="{{ data['prediction'] }} > 50 ? 'green-text' : 'error-text'"> {{ data['prediction'] }}%</span>
         </div>
 
 
-
-        <div class="action_button horizontal s12 center-align vertical" x-data="{ isdisabled: false }" >
+        <p class=" s12 center-align bold medium-space">is this prediction score correct?</p>
+        <div class="action_button s12 center-align vertical" x-data="{ isdisabled: false }">
             <div x-show="!isdisabled">
-                <button class="green5 black-text" @click="label_good('{{ data['image'] }}','test')" x-bind:disabled="isdisabled"
-                    x-on:click="isdisabled = true">
-                    <i>sentiment_satisfied</i> approve
+                <button class="green5 black-text"
+                    @click="label_good('{{ data['image'] }}','test','{{ data['prediction'] }}')"
+                    x-bind:disabled="isdisabled" x-on:click="isdisabled = true">
+                    <i>sentiment_satisfied</i> Yes
                 </button>
                 <button class="secondary" @click="label_skip()" x-bind:disabled="isdisabled"
                     x-on:click="isdisabled = true">
                     <i>skip_next</i> skip
                 </button>
-                <button class="red5 black-text" @click="label_bad('{{ data['image'] }}','test')" x-bind:disabled="isdisabled"
-                    x-on:click="isdisabled = true">
-                    <i>sentiment_dissatisfied</i> reject
-                </button>
+                <button class="red5 black-text"
+                    @click="label_bad('{{ data['image'] }}','test','{{ data['prediction'] }}')"
+                    x-bind:disabled="isdisabled" x-on:click="isdisabled = true">
+                    <i>sentiment_dissatisfied</i> No
+                </button>  
             </div>
             <div class="text-center medium-width" x-show="isdisabled">
-                <span>loading next...</span>
-                <progress></progress>
+                <span>loading next...</span> 
+                <progress></progress> 
             </div>
         </div>
 

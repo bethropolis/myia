@@ -12,3 +12,4 @@ myenv/
 **/good/**
 
 __pycache__/
+model/image_model/

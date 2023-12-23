@@ -3,7 +3,7 @@ from PIL import Image
 from tensorflow.keras.models import load_model
 
 
-model_path = "my_image_classifier.keras"
+model_path = "model/image_model/my_image_classifier.keras"
 
 def predict_image_class(image_path, target_size=(200, 150)):
     """Predicts the class of an image using a loaded Keras model.

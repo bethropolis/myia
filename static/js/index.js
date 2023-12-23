@@ -2,10 +2,11 @@ const theme = async (from) => {
   await ui("theme", from);
 };
 
-async function sendPostRequest(url, label, image_url) {
+async function sendPostRequest(url, label, image_url, prediction = 0) {
   const data = {
     label: label,
-    image_path: image_url
+    image_path: image_url,
+    prediction: prediction
   };
 
   // Use axios to make a POST request with the data and headers
@@ -23,21 +24,26 @@ function trigger_load() {
 }
 
 function label_skip() {
-  trigger_load();
+  trigger_load(); 
 }
 
 
-async function label_bad(image_url, type) {
-  sendPostRequest(`/${type}_label`, 'bad', image_url);
+async function label_bad(image_url, type, prediction = 0) {
+  sendPostRequest(`/${type}_label`, 'bad', image_url, prediction);
   trigger_load();
 }
 
-async function label_good(image_url, type) {
-  sendPostRequest(`/${type}_label`, 'good', image_url);
+async function label_good(image_url, type, prediction = 0) {
+  sendPostRequest(`/${type}_label`, 'good', image_url, prediction);
   trigger_load();
 }
 
 document.addEventListener("DOMContentLoaded", function (event) {
   htmx.trigger('#counter', 'pageLoaded');
+
+
+  htmx.on('htmx:afterRequest', (evt) => {
+    console.log(evt);
+  })
 }
 );

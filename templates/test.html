@@ -4,14 +4,42 @@
 
 
 {% block content %}
-  <main class="responsive">
-    <header class="surface-container-lowest">
-      <nav>
-        <h5 class="max">Test</h5>
-      </nav>
-    </header>
-    <main id="counter" hx-get="/random_image" hx-swap="innerHTML"
-    hx-trigger="pageLoaded" x-transition>
-  </main>
-  </main>
+<main class="responsive">
+  <header class="surface-container-lowest">
+    <nav>
+      <h5 class="max">Test</h5>
+    </nav>
+  </header>
+
+  <div class="grid">
+    <div class="s8">
+      <main id="counter" hx-get="/random_image" hx-swap="innerHTML" hx-trigger="pageLoaded" x-transition>
+      </main>
+    </div>
+    <div class="s4">
+      {% include 'test_sidebar.html' %}
+
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+
+{% block script %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    htmx.trigger('#counter', 'pageLoaded');
+  });
+
+
+  function change_model(model) {
+    console.log(model);
+    let main = document.querySelector('#counter');
+    main.setAttribute('hx-get', '/random_image?model=' + model);
+    htmx.process(main);
+  }
+</script>
+
+
 {% endblock %}

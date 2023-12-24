@@ -1,0 +1,24 @@
+<div class="medium-height center-align">
+  <div class="center-align grid vertical">
+    <div class="image s12">
+      <img src="{{ image }}" style="height: 300px; width: 400px" />
+    </div>
+    <div
+      class="action_button row s12 center-align vertical"
+      x-data="{ isdisabled: false }"
+    >
+      <div>
+        <button
+          class="green5 black-text"
+          hx-get="/random_image?image={{ image }}"
+          hx-trigger="click"
+          xh-target="#counter"
+          x-bind:disabled="isdisabled"
+          x-on:click="isdisabled = true"
+        >
+          <i>test</i> Test
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

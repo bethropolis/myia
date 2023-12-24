@@ -1,11 +1,14 @@
 import tensorflow as tf
 from tensorflow.keras.models import load_model
+from image_enhance import enhance_image
 import numpy as np
 from PIL import Image
 import os
 import matplotlib.pyplot as plt
+from threading import Thread
 
-def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir):
+
+def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir, model_name):
     """
     Loads a trained model, evaluates its performance on testing data,
     and visualizes predictions vs. true labels for both classes.
@@ -14,6 +17,7 @@ def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir):
         model_path (str): Path to the saved model file.
         test_good_dir (str): Path to the directory containing good testing images.
         test_bad_dir (str): Path to the directory containing bad testing images.
+        model_name (str): Name of the model for watermarking.
     """
     
     graph_path = 'static/images/graph.png'
@@ -81,13 +85,15 @@ def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir):
     plt.legend()
 
     plt.tight_layout()
+    
+    # Add watermark with model name at the bottom right
+    plt.text(0.99, 0.01, f'Model: {model_name}', ha='right', va='bottom', transform=plt.gcf().transFigure, color='grey', fontsize=10, fontweight='bold')
+    
     plt.show()
     
     plt.savefig(graph_path)
     
-    return graph_path;
+    # Enhance graph image in background thread
+    Thread(target=enhance_image, args=(graph_path,)).start()
     
-
-
-
-# evaluate_and_visualize_model('model/image_model/updated_image_classifier.keras', 'model/labeled/good', 'model/labeled/bad')
+    return graph_path;

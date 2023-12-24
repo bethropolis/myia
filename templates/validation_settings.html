@@ -1,48 +1,63 @@
-<form action="#"class="medium-padding large-height" hx-post="/validation_results" hx-target="#result" hx-trigger="submit">
-
-    <div>
-        <div class="horizontal middle-align">
-            <div class="small-space">
-                <i>model_training</i>
-            </div>
-            <div class="small-space">
-                <h5 class="small">model</h5>
-            </div>
-        </div>
-        <div class="field suffix label border">
-            <select name="model" class="medium">
-                {% for model in models %}
-                <option value="{{ model }}">{{ model }}</option>
-                {% endfor %}
-            </select>
-
-            <label class="active">select model</label>
-            <i>arrow_drop_down</i>
-        </div>
+<form action="#" class="medium-padding large-height" hx-post="/validation_results" hx-target="#result"
+  hx-swap="innerHTML" hx-trigger="submit" hx-disabled-elt="button" @submit="alert('Hello World!')">
+  <div>
+    <div class="horizontal middle-align">
+      <div class="small-space">
+        <i>model_training</i>
+      </div>
+      <div class="small-space">
+        <h5 class="small">model</h5>
+      </div>
     </div>
+    <div class="field suffix label border">
+      <select name="model" class="medium">
+        {% for model in models %}
+        <option value="{{ model }}">{{ model }}</option>
+        {% endfor %}
+      </select>
 
-    <div>
-        <div class="horizontal middle-align">
-            <div class="small-space">
-                <i>thermostat</i>
-            </div>
-            <div class="small-space">
-                <h5 class="small">temperature</h5>
-            </div>
-        </div>
-        <div class="field suffix label">
-            <nav x-data="{temperature: 0}">
-                <label class="slider">
-                    <input type="range" name="temperature" min="0.0" max="1" step="0.1" x-model="temperature" class="medium">
-                    <span></span>
-                </label>
-                <div style="width: 65px;">
-                    <button class="border small small-round" x-text="temperature">0.0</button>
-                </div>
-            </nav>
-        </div>
+      <label class="active">select model</label>
+      <i>arrow_drop_down</i>
     </div>
-    <div class="submit absolute bottom field middle-align">
-        <button class="small small-round" type="submit" hx-disable-elt="this">evaluate</button>
+  </div>
+
+  <div>
+    <div class="horizontal middle-align">
+      <div class="small-space">
+        <i>thermostat</i>
+      </div>
+      <div class="small-space">
+        <h5 class="small">temperature</h5>
+      </div>
     </div>
+    <div class="field suffix label">
+      <nav x-data="{temperature: 1 }">
+        <label class="slider">
+          <input type="range" name="temperature" min="0.0" max="1" step="0.1" x-model="temperature" class="medium" />
+          <span></span>
+        </label>
+        <div style="width: 65px">
+          <button class="border small small-round" x-text="temperature">
+            1
+          </button>
+        </div>
+      </nav>
+    </div>
+  </div>
+  <div class="submit absolute bottom field middle-align">
+    <button class="small small-round" type="submit">evaluate</button>
+  </div>
 </form>
+
+{% block script %}
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // htmx:sendError event
+
+    document.body.addEventListener("htmx:sendError", function (event) {
+      console.log(event.detail);
+    });
+  });
+</script>
+{% endblock %}

@@ -52,4 +52,4 @@ model.compile(optimizer='adam',
 model.fit(train_images, train_labels, epochs=10)  # Adjust epochs as needed
 
 # Save the model
-model.save('model/image_model/my_image_classifier.keras')
+model.save('model/image_model/myia_image_classifier.keras')

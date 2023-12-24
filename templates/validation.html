@@ -1,26 +1,42 @@
-{% extends "index.html" %}
+{% extends "index.html" %} {% block title %}evaluation {% endblock %} {% block
+header %}
 
-{% block title %}evaluation {% endblock %}
+<style>
+    img {
+        width: 100%;
+        height: auto;
+        max-width: 720px;
+    }
+</style>
 
+{% endblock %} {% block content %}
 
-{% block content %}
-
-<main class="responsive max" style="padding: 0; padding-inline-start: var(---padding);">
-    <header class="responsive surface-container-lowest" x-data="{open: false}"
-        style="border-bottom: 1px solid var(--outline);border-right: 1px solid var(--outline);">
-        <h5 class="medium small-padding" style="margin-block-end: 0;">Evaluation</h5>
+<main class="responsive max" style="padding: 0; padding-inline-start: var(---padding)">
+    <header class="responsive surface-container-lowest" x-data="{open: false}" style="
+      border-bottom: 1px solid var(--outline);
+      border-right: 1px solid var(--outline);
+    ">
+        <h5 class="medium small-padding" style="margin-block-end: 0">Evaluation</h5>
     </header>
-    <div class="grid  medium" style="height: calc(100dvh - 60px);margin-block-start: 0;">
+    <div class="grid medium" style="height: calc(100dvh - 60px); margin-block-start: 0">
         <div id="result" class="s8 middle-align center-align vertical">
             <div class="image ultra-width">
-                <img src="{{ url_for('static', filename='images/graph.png') }}" alt="evaluation results" class="responsive">
+                <img src="{{ url_for('static', filename='images/enhanced_graph.png') }}" alt="evaluation results"
+                    class="responsive" />
             </div>
-            <span class="bold medium medium-space">previous test result</span>
+            <span class="bold small-padding error-text">previous test result</span>
+            <!-- download button -->
+            <div class="center-align">
+                <a href="{{ url_for('static', filename='images/enhanced_graph.png') }}" download>
+                    <button class="border small small-round">
+                        <i>download</i>
+                        <span>download</span>
+                    </button>
+                </a>
+            </div>
         </div>
-        
-        <div class="s4 border">
-            {% include 'validation_settings.html' %}
-        </div>
+
+        <div class="s4 border">{% include 'validation_settings.html' %}</div>
     </div>
 </main>
 

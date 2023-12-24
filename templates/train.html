@@ -32,3 +32,11 @@
     </main>
   </main>
 {% endblock %}
+
+
+{% block script %}
+<script>
+    htmx.trigger('#counter', 'pageLoaded');
+</script>
+
+{% endblock %}

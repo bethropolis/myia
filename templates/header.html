@@ -1,14 +1,21 @@
 <nav class="left" x-data="{ page: '{{ page }}' }">
-    <a href="/" x-bind:class=" page=== 'index' ? 'active' : ''">
-      <i>exercise</i>
-      <div>train</div>
-    </a>
-    <a href="/test" x-bind:class="page === 'test' ? 'active' : ''">
-      <i>science</i>
-      <div>test</div>
-    </a>
-    <a href="/validation" x-bind:class="page === 'validation' ? 'active' : ''">
-      <i>analytics</i>
-      <div>eval</div>
-    </a>
-  </nav>
+  <a href="/" x-bind:class=" page=== 'index' ? 'active' : ''">
+    <i>exercise</i>
+    <div>train</div>
+  </a>
+  <a href="/test" x-bind:class="page === 'test' ? 'active' : ''">
+    <i>science</i>
+    <div>test</div>
+  </a>
+  <a href="/validation" x-bind:class="page === 'validation' ? 'active' : ''">
+    <i>analytics</i>
+    <div>eval</div>
+  </a>
+
+  <div class="max"></div>
+  <!-- github -->
+  <a href="https://github.com/bethropolis/myia" target="_blank">
+      {% include "icon/github.svg" %}
+    <div>github</div>
+  </a>
+</nav>

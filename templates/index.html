@@ -2,20 +2,27 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %} {% endblock %}</title>
-  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/beer.min.css') }}">
+  <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/beer.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/toastify.min.css') }}" />
   <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
+  
+  <script src="{{ url_for('static', filename='js/toastify-js.js') }}"></script>
   <script defer src="{{ url_for('static', filename='js/axios.min.js') }}"></script>
   <script defer src="{{ url_for('static', filename='js/alphine.min.js') }}"></script>
+
+  {% block header %} {% endblock %}
 </head>
 
 <body class="surface-container-lowest dark">
-  {% include 'header.html' %}
-  {% block content %}
-  {% endblock %}
+    {% include 'header.html' %}
+    
+    {% block content %} {% endblock %} 
+    
+    {% block script %} {% endblock %}
   <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </body>
 

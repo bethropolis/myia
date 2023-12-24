@@ -12,7 +12,7 @@
 
 
         <p class=" s12 center-align bold medium-space">is this prediction score correct?</p>
-        <div class="action_button s12 center-align vertical" x-data="{ isdisabled: false }">
+        <div class="action_button row s12 center-align vertical" x-data="{ isdisabled: false }">
             <div x-show="!isdisabled">
                 <button class="green5 black-text"
                     @click="label_good('{{ data['image'] }}','test','{{ data['prediction'] }}')"
@@ -29,11 +29,13 @@
                     <i>sentiment_dissatisfied</i> No
                 </button>  
             </div>
-            <div class="text-center medium-width" x-show="isdisabled">
+            <div class="text-center center-align vertical" x-show="isdisabled">
                 <span>loading next...</span> 
-                <progress></progress> 
+                <progress class="medium"></progress> 
             </div>
         </div>
 
     </div>
 </div>
+
+

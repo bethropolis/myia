@@ -24,7 +24,7 @@ function trigger_load() {
 }
 
 function label_skip() {
-  trigger_load(); 
+  trigger_load();
 }
 
 
@@ -39,11 +39,21 @@ async function label_good(image_url, type, prediction = 0) {
 }
 
 document.addEventListener("DOMContentLoaded", function (event) {
-  htmx.trigger('#counter', 'pageLoaded');
 
 
   htmx.on('htmx:afterRequest', (evt) => {
-    console.log(evt);
+    if (evt.detail.failed) {
+      Toastify({
+        text: "Request failed, could not reach server.",
+        duration: 3000,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "center", // `left`, `center` or `right`
+        backgroundColor: "#ff0000",
+      }).showToast();
+
+
+    }
   })
 }
 );

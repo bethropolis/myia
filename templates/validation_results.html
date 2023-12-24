@@ -1,3 +1,12 @@
 <div class="image ultra-width">
-    <img src="{{ url_for('static', filename='images/graph.png') }}" alt="evaluation results" class="responsive">
+    <img src="{{ url_for('static', filename='images/graph.png') }}?{{ random_string() }}" alt="evaluation results" class="responsive">
+    <!-- download button -->
+    <div class="center-align">
+        <a href="{{ url_for('static', filename='images/enhanced_graph.png') }}" download>
+            <button class="border small small-round small-margin">
+                <i>download</i>
+                <span>download</span>
+            </button>
+        </a>
+    </div>
 </div>

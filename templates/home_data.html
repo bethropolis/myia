@@ -1,0 +1,88 @@
+{% block header %}
+<style>
+    .responsive-table {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .responsive-table td, .responsive-table th {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    @media screen and (max-width: 600px) {
+        .responsive-table table, .responsive-table thead, .responsive-table tbody, .responsive-table th, .responsive-table td, .responsive-table tr {
+            display: block;
+        }
+
+
+        .responsive-table table {
+            min-width: 600px;  
+        }
+
+        .responsive-table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .responsive-table tr { margin-bottom: 1rem; }
+
+        .responsive-table td {
+            border: none;
+            border-bottom: 1px solid #eee;
+            position: relative;
+            padding-left: 50%;
+        }
+
+        .responsive-table td:before {
+            position: absolute;
+            top: 0;
+            left: 6px;
+            width: 45%;
+            padding-right: 10px;
+            white-space: nowrap;
+            content: attr(data-column);
+        }
+    }
+</style>
+{% endblock %}
+
+
+<div class="grid" style="margin-block-end: 1em;">
+    {% for directory_name, directory_info in data.directories.items() %}
+    {% include 'card_template.html' %}
+    {% endfor %}
+</div>
+
+<!-- Models section -->
+<div class="models small-margin">
+    <h4>Models</h4>
+    <div class="small-height responsive-table">
+        <table class="responsive">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Size</th>
+                    <th>Average Accuracy</th>
+                    <th>Average Loss</th>
+                    <th>Graph</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for model in data.models.data %}
+                <tr>
+                    <td>{{ model.name }}</td>
+                    <td>{{ ((model.size / (1024 * 1024)) | round(2)) }} MB</td>
+                    <td>{{ (model.evaluation.average_accuracy | round(2)) }}</td>
+                    <td>{{ (model.evaluation.average_loss | round(2)) }}</td>
+                    <td><a class="tertiary-text"
+                            href="{{ url_for('static', filename='images/'+model.evaluation.graph_path) }}"
+                            target="_blank">View Graph</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

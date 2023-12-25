@@ -1,5 +1,9 @@
 <nav class="left" x-data="{ page: '{{ page }}' }">
   <a href="/" x-bind:class=" page=== 'index' ? 'active' : ''">
+    <i>home</i>
+    <div>home</div>
+  </a>
+  <a href="/train" x-bind:class=" page=== 'train' ? 'active' : ''">
     <i>exercise</i>
     <div>train</div>
   </a>
@@ -13,6 +17,9 @@
   </a>
 
   <div class="max"></div>
+  <button class="transparent circle"  @click="isDark = !isDark; localStorage.setItem('darkMode', isDark)">
+    <i class="page top active" x-text="isDark ? 'light_mode' : 'dark_mode'"></i>
+  </button>
   <!-- github -->
   <a href="https://github.com/bethropolis/myia" target="_blank">
       {% include "icon/github.svg" %}

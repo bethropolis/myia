@@ -1,5 +1,8 @@
+import json
 import tensorflow as tf
 from tensorflow.keras.models import load_model
+from keras.preprocessing.image import ImageDataGenerator
+
 from image_enhance import enhance_image
 import numpy as np
 from PIL import Image
@@ -8,7 +11,7 @@ import matplotlib.pyplot as plt
 from threading import Thread
 
 
-def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir, model_name):
+def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir, model_name, configs={}):
     """
     Loads a trained model, evaluates its performance on testing data,
     and visualizes predictions vs. true labels for both classes.
@@ -21,10 +24,14 @@ def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir, model_
     """
     
     graph_path = 'static/images/graph.png'
+    temperature = float(configs.get('temperature', 1.0))
+    data_augmentation = configs.get('data_augmentation', False)
 
     # Load the model
-    model = load_model(model_path)
+    model = load_model(model_path) 
 
+
+    
     # Load and preprocess testing images for 'good' class
     test_images_good = []
     test_labels_good = []
@@ -64,6 +71,27 @@ def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir, model_
     predictions_good = model.predict(test_images_good)
     predictions_bad = model.predict(test_images_bad)
 
+    if temperature != 1.0:
+            predictions_good = np.power(predictions_good, 1.0 / temperature)
+            predictions_bad = np.power(predictions_bad, 1.0 / temperature)
+            
+    if data_augmentation:
+        test_datagen = ImageDataGenerator(
+            rotation_range=configs.get('rotation_range', 10),
+            width_shift_range=configs.get('width_shift_range', 0.1),
+            height_shift_range=configs.get('height_shift_range', 0.1),
+            shear_range=configs.get('shear_range', 0.2),
+            zoom_range=configs.get('zoom_range', 0.2),
+            horizontal_flip=configs.get('horizontal_flip', True),
+            fill_mode=configs.get('fill_mode', 'nearest')
+        )
+        
+        test_generator_good = test_datagen.flow(test_images_good, test_labels_good, shuffle=False)
+        predictions_good = model.predict(test_generator_good)
+        
+        test_generator_bad = test_datagen.flow(test_images_bad, test_labels_bad, shuffle=False)
+        predictions_bad = model.predict(test_generator_bad)
+            
     plt.figure(figsize=(10, 6))
 
     # Plot predictions vs. labels for 'good' class
@@ -93,7 +121,45 @@ def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir, model_
     
     plt.savefig(graph_path)
     
+    model_graph_name = f"graph_{model_name}.png"
+    model_graph_path = f"static/images/{model_graph_name}";
+    
+    Thread(target=save_graph, args=(model_graph_path,)).start()
+    
+    evaluation_results = {
+        'accuracy_good': float(test_accuracy_good),
+        'accuracy_bad': float(test_accuracy_bad),
+        'loss_good': float(test_loss_good),
+        'loss_bad': float(test_loss_bad),
+        'temperature': temperature,
+        'data_augmentation': data_augmentation,
+        'average_accuracy': float((test_accuracy_good + test_accuracy_bad) / 2),
+        'average_loss': float((test_loss_good + test_loss_bad) / 2),
+        'graph_path': model_graph_name,
+        "static_path": model_graph_path
+        }
+
+    try:
+        with open('model/model_evaluations.json', 'r+', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+            except ValueError:  # includes simplejson.decoder.JSONDecodeError
+                data = {}
+
+            data[model_name] = evaluation_results
+            f.seek(0)
+            json.dump(data, f, indent=4)
+            f.truncate()
+
+    except FileNotFoundError:
+        with open('model/model_evaluations.json', 'w', encoding='utf-8') as f:
+            data = {model_name: evaluation_results}
+            json.dump(data, f, indent=4)
+        
     # Enhance graph image in background thread
     Thread(target=enhance_image, args=(graph_path,)).start()
-    
+            
     return graph_path;
+
+def save_graph(graph_path):
+    plt.savefig(graph_path)

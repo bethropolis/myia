@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, jsonify, send_from_directory, make_response
+from flask import Flask, config, render_template, request, jsonify, send_from_directory, make_response
 from extra.random import random_string
+from info import get_directory_info, get_model_info
 from predict import predict_image_class
+from resize import resize_image
 from validation import evaluate_and_visualize_model
 import os
 import shutil
@@ -10,10 +12,14 @@ import random
 
 app = Flask(__name__)
 
-models_dir = 'model/image_model'
+model_dir = 'model'
 training_folder = 'training'   
+models_dir = 'model/image_model'
 test_image_dir = 'training/images'
 train_image_dir = 'training/train'
+label_image_dir = 'model/labeled'
+evaluation_image_dir = 'model/evaluation'
+
 evaluation_good_dir = 'model/evaluation/good'
 evaluation_bad_dir = 'model/evaluation/bad'
 label_good_dir = 'model/labeled/good'
@@ -40,6 +46,9 @@ def get_username(filename):
 def create_directory(dir):
     if not os.path.exists(dir):
         os.makedirs(dir)
+# check if file exists
+def file_exists(file):
+    return os.path.exists(file)
     
 def get_models():
     models = []
@@ -61,8 +70,11 @@ def load_labeled_images():
 # Route to send images to frontend
 @app.route('/')
 def index():
-    return render_template('train.html', page='index')
+    return render_template('home.html', page='index')
 
+@app.route('/train')
+def train():
+    return render_template('train.html', page='train')
 
 @app.route("/test")
 def test():
@@ -91,6 +103,27 @@ def label_images():
     return 'Image labeled successfully!'
 
 
+
+# Route to fetch home data
+@app.route('/home_data')
+def get_home_data():
+    directories = {
+        'training': get_directory_info(train_image_dir, []),
+        'test': get_directory_info(test_image_dir, []),
+        'evaluation': get_directory_info(evaluation_image_dir, ['good', 'bad']),
+        'labeled': get_directory_info(label_image_dir, ['good', 'bad']),
+    }
+
+    models = get_model_info(models_dir)
+    
+    data ={
+        'directories': directories,
+        'models': models
+    }
+    
+    return render_template('home_data.html', data=data)
+    
+    
 # route to label images and update JSON file for test
 @app.route('/test_label', methods=['POST'])
 def label_test_images():
@@ -142,12 +175,20 @@ async def upload_image():
     
     # allow only images type png, jpg
     if image.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-        file_name = "user_upload_" + random_string() + "_" + image.filename
+        file_name = "user_upload_" + random_string() + ".png"  # Ensure PNG extension
         image_path = os.path.join(storage_path, file_name)
-        image.save(image_path) 
+
+        try:
+            image.save(image_path)  # Save as PNG
+            resize_image(storage_path, storage_path, file_name, (200, 150), overwrite=True)
+
+        except Exception as e:
+            return jsonify(error=str(e)), 500
+        
         return render_template('upload_image.html', image=image_path)
     else:
         return jsonify(error="Invalid image type"), 415
+    
     
 @app.route('/get_images')
 def get_images():
@@ -173,6 +214,11 @@ def random_image():
     choosen_model = request.args.get('model', default = models[0], type = str)
     passed_image = request.args.get('image', default = None, type = str)
     
+    if not file_exists(os.path.join(models_dir, choosen_model)):
+        return jsonify(error="Model does not exist"), 404
+    
+    
+    
     model_path = os.path.join(models_dir, choosen_model)
     labeled_images = load_labeled_images()
     images = load_images(test_image_dir)
@@ -191,7 +237,7 @@ def random_image():
     
     prediction = round((predict_image_class(model_path, image) * 100),2)
     response_data = {'image': image, 'prediction': prediction}
-    return render_template('random_image_template.html', data=response_data)    
+    return render_template('random_image_template.html', data=response_data)     
 
 
 
@@ -214,9 +260,15 @@ def test_validation():
 async def get_validation_results():
     model = request.form['model']
     model_path = os.path.join(models_dir, model) 
-    temperature = request.form['temperature']
+    temperature = request.form.get("temperature", 1.0)
+    augmentation = request.form.get('augmentation', '')
     
-    graph_image = evaluate_and_visualize_model(model_path, label_good_dir, label_bad_dir,model)
+    configs = {
+        "temperature": temperature,
+        "data_augmentation": augmentation == "on"
+    }
+    
+    graph_image = evaluate_and_visualize_model(model_path, label_good_dir, label_bad_dir,model, configs)
     return render_template('validation_results.html', graph_image=graph_image, random_string=random_string)
 
 
@@ -227,9 +279,9 @@ def serve_training_images(filename):
     return response
 
 @app.route('/model/<path:filename>')
-def serve_training_images(filename):
-    response = make_response(send_from_directory(training_folder, filename))
-    response.headers['Cache-Control'] = 'public, max-age=86400'  # Cache for 1 day
+def serve_model_images(filename):
+    response = make_response(send_from_directory(model_dir, filename))
+    response.headers['Cache-Control'] = 'public, max-age=86400'  # Cache for 1 day 
     return response
 
 
@@ -242,5 +294,5 @@ def get_counts():
     counts = {'train_good': train_good_count, 'train_bad': train_bad_count, 'test_good': test_good_count, 'test_bad': test_bad_count}
     return render_template('count_template.html', counts=counts)
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
     app.run(debug=True) 

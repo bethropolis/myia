@@ -12,11 +12,12 @@
           class="green5 black-text"
           hx-get="/random_image?image={{ image }}"
           hx-trigger="click"
-          xh-target="#counter"
+          hx-target="#counter"
+          hx-swap="innerHTML"
           x-bind:disabled="isdisabled"
           x-on:click="isdisabled = true"
         >
-          <i>test</i> Test
+          <i>experiment</i> Test
         </button>
       </div>
     </div>

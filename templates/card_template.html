@@ -1,0 +1,36 @@
+<article class="primary-container s12 m6 l3 center medium-width wrap small-margin small-padding"
+    style="display: flex; flex-direction: column; justify-content: space-between;">
+    <nav class="row">
+        <h5 class="small max">{{ directory_name }}</h5>
+        <button class="chip circle no-border transparent"><i>more_vert</i>
+            <menu class="left no-wrap"><a>Remove</a></menu>
+        </button>
+    </nav>
+
+    <div style="flex-grow: 1;">
+        <div class="row">
+            <i class="secondary-text">image</i>
+            <div class="max">
+                <span>{{ directory_info.no_images }}</span> {{ 'images' if not directory_info.labels else 'folders' }}
+            </div>
+        </div>
+        {% for label, label_info in directory_info.labels.items() %}
+        <div class="row">
+            <i class="{{ 'light-green-text' if label == 'good' else 'red-text' }}">{{ 'thumb_up' if label == 'good' else
+                'thumb_down' }}</i>
+            <div class="max">
+                <span>{{ label_info.no_images }}</span> {{ label }} images
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <span class="date secondary-text italic" style="scroll-margin-inline-start: .7em;">last modified: {{ directory_info.date_modified }}</span>
+
+    <a href="" class="row tiny-padding large-width tertiary-text" style="align-self: flex-end;">
+        <h6 class="max small">View directory</h6>
+        <button class="chip circle no-border transparent">
+            <i>chevron_right</i>
+        </button>
+    </a>
+
+</article>

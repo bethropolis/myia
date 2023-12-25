@@ -13,4 +13,7 @@ myenv/
 
 __pycache__/
 model/image_model/
-static/graph.png
+model/user_upload/
+*.keras.png
+model/model_evaluations.json
+labeled_images.json

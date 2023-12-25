@@ -1,5 +1,5 @@
 <form action="#" class="medium-padding large-height" hx-post="/validation_results" hx-target="#result"
-  hx-swap="innerHTML" hx-trigger="submit" hx-disabled-elt="button" @submit="alert('Hello World!')">
+  hx-swap="innerHTML" hx-trigger="submit" hx-disabled-elt="button">
   <div>
     <div class="horizontal middle-align">
       <div class="small-space">
@@ -42,6 +42,21 @@
           </button>
         </div>
       </nav>
+    </div>
+  </div>
+
+  <div>
+    <div class="row">
+      <div class="max horizontal middle-align">
+        <i>transform</i>
+        <h5 class="small">augmentation</h5>
+      </div>
+      <div class="toggle">
+        <label for="augmentation" class="switch">
+          <input id="augmentation" type="checkbox" name="augmentation">
+          <span></span>
+        </label>
+      </div>
     </div>
   </div>
   <div class="submit absolute bottom field middle-align">

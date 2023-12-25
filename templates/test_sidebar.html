@@ -18,10 +18,10 @@
             <label class="active">current model</label>
             <i>arrow_drop_down</i>
         </div>
-
         <!-- Image upload form -->
-        <div class="field suffix label border" x-data="{ image: '' }">
-            <form id="form" hx-post="/upload" hx-trigger="change" hx-target="#counter" enctype="multipart/form-data">
+        <div class="field suffix label border">
+            <form id="form" hx-post="/upload" hx-trigger="change" hx-target="#counter" hx-swap="innerHTML"
+                enctype="multipart/form-data">
                 <label id="upload-label" for="image-upload"
                     class="primary row large-round tiny-padding small-width middle-align center-align">
                     <i>upload</i>
@@ -29,7 +29,7 @@
                         <span id="upload-text" class="medium">upload image</span>
                     </div>
                 </label>
-                <input id="image-upload" x-model="image" type="file" name="image" accept="image/png, image/jpeg"
+                <input id="image-upload"  type="file" name="image" accept="image/png, image/jpeg"
                     style="display: none" />
             </form>
         </div>
@@ -38,7 +38,7 @@
 
 {% block scripts %}
 <script>
-    htmx.on('#form', 'htmx:xhr:progress', function(evt) {
+    htmx.on('#form', 'htmx:xhr:progress', function (evt) {
         var progress = evt.detail.loaded / evt.detail.total * 100;
         htmx.find('#upload-label').style.border = "3px solid #000";
         htmx.find('#upload-label').style.borderColor = 'hsl(' + progress + ', 100%, 50%)';
@@ -46,11 +46,11 @@
         htmx.find('#image-upload').disabled = true;
     });
 
-    htmx.on('#form', 'htmx:afterOnLoad', function(evt) {
+    htmx.on('#form', 'htmx:afterOnLoad', function (evt) {
         htmx.find('#upload-label').style.border = "none";
         htmx.find('#upload-label').style.borderColor = '';
         htmx.find('#upload-text').innerText = 'upload image';
         htmx.find('#image-upload').disabled = false;
     });
 </script>
-{% endblock %} 
+{% endblock %}

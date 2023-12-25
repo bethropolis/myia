@@ -8,6 +8,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/beer.min.css') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='css/toastify.min.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
   <script src="{{ url_for('static', filename='js/htmx.min.js') }}"></script>
   
   <script src="{{ url_for('static', filename='js/toastify-js.js') }}"></script>
@@ -17,7 +18,7 @@
   {% block header %} {% endblock %}
 </head>
 
-<body class="surface-container-lowest dark">
+<body class="surface-container-lowest" x-data="{ isDark: localStorage.getItem('darkMode') === 'true' }"  x-bind:class="{ 'dark': isDark }">
     {% include 'header.html' %}
     
     {% block content %} {% endblock %} 

@@ -18,8 +18,13 @@ hx-indicator=".htmx-indicator"
         <img class="responsive medium" loading="lazy" src="{{ image_url }}">
         <div class="absolute bottom left right padding bottom-shadow white-text">
             <nav>
-                <h6 style="width:120px;">{{ title }}</h6>
+                <h6 style="width:100px;">{{ title }}</h6>
                 <div class="max"></div>
+                <a href="/test?image={{ image_url }}" class="circle transparent">
+                <button class="circle transparent">
+                    <i>science</i>
+                </button>
+                </a>
                 <button class="circle transparent" @click="delete_image('{{ image_url }}')" x-on:click="unlabled = false">
                     <i>delete</i>
                 </button>

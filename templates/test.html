@@ -13,7 +13,7 @@
 
   <div class="grid">
     <div class="s8 full-height">
-      <main id="counter" hx-get="/random_image" hx-swap="innerHTML" hx-trigger="pageLoaded"  class="full-height" x-transition>
+      <main id="counter" hx-get="/random_image?image={{ passed_image }}" hx-swap="innerHTML" hx-trigger="pageLoaded"  class="full-height" x-transition>
         <div class="center-align middle-align full-height">
             <progress class="circle"></progress>
         </div>

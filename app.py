@@ -17,7 +17,7 @@ app = Flask(__name__)
 model_dir = 'model'
 training_folder = 'training'   
 models_dir = 'model/image_model'
-test_image_dir = 'training/images'
+test_image_dir = 'training/test'
 train_image_dir = 'training/train'
 label_image_dir = 'model/labeled'
 evaluation_image_dir = 'model/evaluation'
@@ -78,7 +78,8 @@ def train():
 @app.route("/test")
 def test():
     models = get_models()
-    return render_template('test.html', page='test' , models=models)
+    passed_image = request.args.get('image', default = "", type = str)
+    return render_template('test.html', page='test' , models=models , passed_image=passed_image) 
 
 # Route to label images and update JSON file
 @app.route('/train_label', methods=['POST'])
@@ -253,7 +254,7 @@ def clear_directory():
     path = request.form['path']
 
     if not os.path.commonpath([path]).startswith(os.path.commonpath([model_dir, training_folder])):
-        return jerror_response("Invalid path", 400)
+        return error_response("Invalid path", 400)
 
     if not os.path.exists(path):
         return error_response("Directory does not exist", 404)
@@ -282,6 +283,9 @@ def get_images():
     
     next_offset = offset + limit
     
+    if offset is 0 and len(images_and_usernames) is 0:
+        return error_response("The train directory is empty", 404)
+    
     return render_template('image_template.html', images=images_and_usernames, offset=next_offset)
 
 
@@ -306,7 +310,7 @@ def random_image():
                 return image
             
      
-    if passed_image is None:
+    if passed_image is None or not file_exists(passed_image):
         image = get_random_image()
     else:
         image = passed_image  
@@ -338,6 +342,11 @@ def test_validation():
 @app.route('/validation_results', methods=['POST'])
 async def get_validation_results():
     model = request.form['model']
+    models = get_models()
+    
+    if model not in models:
+        return error_response("Model does not exist", 404)
+    
     model_path = os.path.join(models_dir, model) 
     temperature = request.form.get("temperature", 1.0)
     augmentation = request.form.get('augmentation', '')

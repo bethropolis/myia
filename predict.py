@@ -1,7 +1,7 @@
 import numpy as np
 from PIL import Image
 from tensorflow.keras.models import load_model
-
+from resize import resize_single_image
 
 def predict_image_class(model_path, image_path, target_size=(200, 150)):
     """Predicts the class of an image using a loaded Keras model.
@@ -16,6 +16,11 @@ def predict_image_class(model_path, image_path, target_size=(200, 150)):
     """
     # Load the model
     model = load_model(model_path)
+    
+    
+    
+    resize_single_image(image_path, image_path, target_size)
+
 
     # Load and preprocess the image
     img = Image.open(image_path)

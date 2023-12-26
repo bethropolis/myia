@@ -2,7 +2,7 @@ from PIL import Image
 import os
 
 # Define the directory where your screenshots are stored
-input_dir = 'data/images'
+input_dir = 'training/test'
 
 # Define the output directory for resized images
 output_dir = 'training/images'
@@ -13,31 +13,31 @@ os.makedirs(output_dir, exist_ok=True)
 # Define the target size for resizing
 target_size = (200, 150) # Change this to your desired width and height
 
+def resize_single_image(img_path, output_path, target_size):
+    img = Image.open(img_path)
+    img = img.convert('RGBA') # Convert to RGB if necessary
 
+    # Resize the image while maintaining aspect ratio
+    resized_img = img.resize(target_size, resample=Image.ANTIALIAS)
+
+    if output_path.endswith('.png'):   
+        resized_img.save(output_path)
+    else:
+        resized_img.save(output_path, 'PNG')
 
 def resize_image(input_dir, output_dir, filename, target_size, overwrite=False):
-   img_path = os.path.join(input_dir, filename)
-   output_path = os.path.join(output_dir, filename)
+    img_path = os.path.join(input_dir, filename)
+    output_path = os.path.join(output_dir, filename)
    
-   # Check if the output file already exists
-   if os.path.exists(output_path) and not overwrite:
-       print("File " + filename + " already exists, skipping.")
-       return
-   
-   img = Image.open(img_path)
-   
-   img = img.convert('RGBA') # Convert to RGB if necessary
+    # Check if the output file already exists
+    if os.path.exists(output_path) and not overwrite:
+        print("File " + filename + " already exists, skipping.")
+        return
 
-   # Resize the image while maintaining aspect ratio
-   resized_img = img.resize(target_size, resample=Image.ANTIALIAS)
-
-   # Save the resized image to the output directory
-   resized_img.save(output_path)
-   
-   
+    resize_single_image(img_path, output_path, target_size)
 
 if __name__ == "__main__":
     for filename in os.listdir(input_dir):
         if filename.endswith(".png") or filename.endswith(".jpg"):
-            resize_image(input_dir, output_dir, filename, target_size)
+            resize_image(input_dir, output_dir, filename, target_size, True)
             print("Resizing complete!")

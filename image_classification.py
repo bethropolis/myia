@@ -12,27 +12,47 @@ model_path = 'model/image_model'
 train_good_dir = 'model/labeled/good'
 train_bad_dir = 'model/labeled/bad'
 
+# Check if directories exist
+if not os.path.exists(train_good_dir) or not os.path.exists(train_bad_dir):
+    raise Exception("Training directories do not exist")
+
 # Load and preprocess images
 train_images = []
 train_labels = []
 
 for filename in os.listdir(train_good_dir):
-    img = Image.open(os.path.join(train_good_dir, filename))
-    img = img.resize((200, 150)) 
-    img = np.array(img) / 255.0
-    train_images.append(img)
-    train_labels.append(1)  # Label 'good' images as 1
+    if not filename.lower().endswith(('.png', '.jpg')):
+        continue
+    try:
+        img = Image.open(os.path.join(train_good_dir, filename))
+        img = img.resize((200, 150)) 
+        img = np.array(img) / 255.0
+        train_images.append(img)
+        train_labels.append(1)  # Label 'good' images as 1
+    except Exception as e:
+        print(f"Error processing file {filename}: {str(e)}")
 
 for filename in os.listdir(train_bad_dir):
-    img = Image.open(os.path.join(train_bad_dir, filename))
-    img = img.resize((200, 150))
-    img = np.array(img) / 255.0
-    train_images.append(img)
-    train_labels.append(0)  # Label 'bad' images as 0
+    if not filename.lower().endswith(('.png', '.jpg')):
+        continue
+    try:
+        img = Image.open(os.path.join(train_bad_dir, filename))
+        img = img.resize((200, 150))
+        img = np.array(img) / 255.0
+        train_images.append(img)
+        train_labels.append(0)  # Label 'bad' images as 0
+    except Exception as e:
+        print(f"Error processing file {filename}: {str(e)}")
+
+# Check if any images were loaded
+if not train_images:
+    raise Exception("No images found in training directories")
 
 # Convert to NumPy arrays
 train_images = np.array(train_images)
 train_labels = np.array(train_labels)
+
+# Rest of the code...
 
 
 # Define the model architecture (example CNN)

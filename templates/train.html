@@ -13,7 +13,7 @@
           hx-trigger="pageLoaded"></div>
       </nav>
     </header>
-    <main hx-get="/get_images" hx-target="#grid" hx-trigger="load">
+    <main id="train_home" hx-get="/get_images" hx-target="#grid" hx-trigger="load">
       <div class="grid" id="grid" x-transition>
         <div class="medium-height middle-align center-align s12 surface-container-lowest">
           <div class="center-align" >
@@ -37,7 +37,7 @@
 {% block script %}
 <script>
 
-    main = document.querySelector('#grid');
+    main = document.querySelector('#train_home');
     htmx.trigger('#counter', 'pageLoaded');
 
     function handleError(evt) {

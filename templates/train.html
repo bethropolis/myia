@@ -36,7 +36,19 @@
 
 {% block script %}
 <script>
+
+    main = document.querySelector('#grid');
     htmx.trigger('#counter', 'pageLoaded');
+
+    function handleError(evt) {
+    main.innerHTML = `<div class="row vertical center-align middle-align full-height">
+                        <h5 class="max">Error loading images</h5>
+                        <p>${evt.detail.error}</p>
+                        <code>${evt.detail.xhr.responseText}</code>
+                      </div>`;  
+  }
+
+main.addEventListener("htmx:responseError", handleError);
 </script>
 
 {% endblock %}

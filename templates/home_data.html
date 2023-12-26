@@ -68,6 +68,7 @@
                     <th>Average Accuracy</th>
                     <th>Average Loss</th>
                     <th>Graph</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -87,6 +88,15 @@
                     {% else %}
                         <span class="secondary-text">No graph</span>
                     {% endif %}
+                    </td>
+                    <td style="overflow: visible;" style="z-index: 4;" >
+                        <button class="chip relative circle no-border transparent" style="z-index: 24;">
+                            <i>more_vert</i>
+                            <menu class="left absolute no-wrap surface-container-low" style="z-index: 44;">
+                                <a>fine tune</a>
+                                <a @click="delete_image('{{ model.path }}')">delete</a>
+                            </menu>
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}

@@ -16,3 +16,4 @@ model/image_model/
 model/user_upload/
 *.keras.png
 model/model_evaluations.json
+.browserImages/

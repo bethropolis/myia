@@ -44,26 +44,22 @@ function makeToast(text, duration = 3000, backgroundColor = "#ff0000") {
     text: text,
     duration: duration,
     close: true,
-    gravity: "top", // `top` or `bottom`
-    position: "center", // `left`, `center` or `right`
-    backgroundColor: backgroundColor,
+    gravity: "top", 
+    position: "center", 
+    style: {
+      background: backgroundColor,
+    },
   }).showToast();
 }
 
-document.addEventListener("DOMContentLoaded", function (event) {
-
-
-  htmx.on('htmx:afterRequest', (evt) => {
-
-    console.log(evt.detail);
-    if (evt.detail.failed) {
-      // if error messsage is present
-      if (evt.detail.xhr.response.includes("error")) {
-        makeToast(evt.detail.xhr.response);
-      } else {
-        makeToast("Something went wrong!");
-      }
+htmx.on('htmx:responseError', (evt) => {
+  if (evt.detail.failed || evt.detail.xhr.status != 200) {
+    // if responseText
+    if (evt.detail.xhr.responseText) {
+      makeToast(evt.detail.xhr.responseText, 3000, "#ff0000");
     }
-  });
-}
-);
+    else {
+      makeToast("Something went wrong");
+    }
+  }
+});

@@ -33,7 +33,8 @@ def get_model_info(model_dir):
                 models.append({
                     'name': file,
                     'size': os.path.getsize(model_path),
-                    'evaluation': get_model_evaluation(file) 
+                    'evaluation': get_model_evaluation(file), 
+                    'path': model_path
                 })
 
     return {

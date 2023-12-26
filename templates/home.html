@@ -53,5 +53,40 @@
 {% endblock %}
 
 {% block script %}
+<script>
+
+    function clear_images(path) {
+        axios.post('/clear_directory', {
+            path: path
+        }, {
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded'
+            }
+        }).then(function (response) {
+            if (response.data.status == 'success') {
+                window.location.reload();
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function delete_image(image_url) {
+        axios.post('/delete_image', {
+            image_path: image_url
+        }, {
+            headers: {
+                'Content-Type': "application/x-www-form-urlencoded"
+            }
+        }).then(function (response) {
+            if (response.status != 200) {
+                makeToast('An error occured while deleting the image');
+            }
+        }).catch(function (error) {
+            console.log(error);
+            makeToast('An error occured while deleting the image');
+        });
+    }
+</script>
 
 {% endblock %}

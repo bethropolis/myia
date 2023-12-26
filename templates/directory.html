@@ -1,14 +1,22 @@
 {% extends "index.html" %}
 
-{% block title %}{{ path }}{% endblock %}
+{% block title %}{{ path
+
+
+}}{% endblock %}
 
 {% block content %}
 <main class="responsive">
     <header class="surface-container-lowest">
         <nav>
             <h5 class="max">{{ path }}</h5>
+            <button class="circle transparent" onclick="clear_images('{{ path }}')">
+                <i>delete</i>
+                <div class="tooltip bottom  medium-space">Clear images</div>
+            </button>
             <button class="circle transparent" id="upload-button">
                 <i>file_upload</i>
+                <div class="tooltip bottom left  medium-space">Upload images</div>
             </button>
         </nav>
     </header>
@@ -33,5 +41,22 @@
     document.getElementById('upload-button').addEventListener('click', function () {
         // Handle upload action here
     });
+
+    function clear_images(path) {
+        axios.post('/clear_directory', {
+            path: path
+        }, {
+            headers: {
+                'content-type': 'application/x-www-form-urlencoded'
+            }
+        }).then(function (response) {
+            if (response.data.status == 'success') {
+                window.location.reload();
+            }
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
+
 </script>
 {% endblock %}

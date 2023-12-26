@@ -13,7 +13,7 @@
 
   <div class="grid">
     <div class="s8 full-height">
-      <main id="counter" hx-get="/random_image" hx-swap="innerHTML" hx-trigger="pageLoaded" class="full-height" x-transition>
+      <main id="counter" hx-get="/random_image" hx-swap="innerHTML" hx-trigger="pageLoaded"  class="full-height" x-transition>
         <div class="center-align middle-align full-height">
             <progress class="circle"></progress>
         </div>
@@ -35,13 +35,24 @@ document.addEventListener('DOMContentLoaded', function () {
     htmx.trigger('#counter', 'pageLoaded');
   });
 
+  let main = document.querySelector('#counter');
 
   function change_model(model) {
     console.log(model);
-    let main = document.querySelector('#counter');
     main.setAttribute('hx-vals', '{"model": "'+model+'"}');
     htmx.process(main);
   } 
+
+  function handleError(evt) {
+    console.log(evt);
+    main.innerHTML = `<div class="row vertical center-align middle-align full-height">
+                        <h5 class="max">Error loading image</h5>
+                        <p>${evt.detail.error}</p>
+                        <code>${evt.detail.xhr.responseText}</code>
+                      </div>`;  
+  }
+
+main.addEventListener("htmx:responseError", handleError);
 
 </script>
  

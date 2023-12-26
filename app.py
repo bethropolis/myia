@@ -1,4 +1,6 @@
-from flask import Flask, config, render_template, request, jsonify, send_from_directory, make_response
+from math import e
+from flask import Flask, Response, abort, config, render_template, request, jsonify, send_from_directory, make_response
+from extra.error import error_response
 from extra.random import random_string
 from info import get_directory_info, get_model_info
 from predict import predict_image_class
@@ -180,11 +182,11 @@ async def upload_image():
             resize_image(storage_path, storage_path, file_name, (200, 150), overwrite=True)
 
         except Exception as e:
-            return jsonify(error=str(e)), 500
+            return error_response(str(e), 500)
         
         return render_template('upload_image.html', image=image_path)
     else:
-        return jsonify(error="Invalid image type"), 415
+        return jsonify(error="Invalid file type"), 400
     
     
 
@@ -232,18 +234,38 @@ def delete_image():
     image_path = request.form['image_path']
 
     if not os.path.commonpath([image_path]).startswith(os.path.commonpath([model_dir, training_folder])):
-        return jsonify(error="Invalid image path"), 400
+        return error_response("Invalid path", 400)
 
     if not os.path.exists(image_path):
-        return jsonify(error="Image does not exist"), 404
+        return error_response("Image does not exist", 404)
 
     try:
         os.remove(image_path)
     except Exception as e:
-        return jsonify(error=str(e)), 500
+        return error_response(str(e), 500)
 
     return 'Image deleted successfully!'
 
+
+# Route to clear a directory
+@app.route('/clear_directory', methods=['POST'])
+def clear_directory():
+    path = request.form['path']
+
+    if not os.path.commonpath([path]).startswith(os.path.commonpath([model_dir, training_folder])):
+        return jerror_response("Invalid path", 400)
+
+    if not os.path.exists(path):
+        return error_response("Directory does not exist", 404)
+
+    try:
+        for filename in os.listdir(path):
+            if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                os.remove(os.path.join(path, filename))
+    except Exception as e:
+        return jsonify(error=str(e)), 500
+
+    return 'Directory cleared successfully!'
 
     
 @app.route('/get_images')
@@ -271,9 +293,7 @@ def random_image():
     passed_image = request.args.get('image', default = None, type = str)
     
     if not file_exists(os.path.join(models_dir, choosen_model)):
-        return jsonify(error="Model does not exist"), 404
-    
-    
+        return error_response("Model does not exist", 404)
     
     model_path = os.path.join(models_dir, choosen_model)
     labeled_images = load_labeled_images()
@@ -285,16 +305,19 @@ def random_image():
             if image not in labeled_images:
                 return image
             
-    
+     
     if passed_image is None:
         image = get_random_image()
     else:
         image = passed_image  
-    
-    prediction = round((predict_image_class(model_path, image) * 100),2)
-    response_data = {'image': image, 'prediction': prediction}
-    return render_template('random_image_template.html', data=response_data)     
-
+        
+    print("current image: ", image)    
+    if image is not None:
+        prediction = round((predict_image_class(model_path, image) * 100),2)
+        response_data = {'image': image, 'prediction': prediction}
+        return render_template('random_image_template.html', data=response_data)     
+    else:
+        return error_response("The test directory is empty", 404)
 
 
 # route to get available models

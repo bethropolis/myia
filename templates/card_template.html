@@ -2,14 +2,17 @@
     style="display: flex; flex-direction: column; justify-content: space-between;">
     <nav class="row">
         <h5 class="small max">{{ directory_name }}</h5>
-        <button class="chip circle no-border transparent"><i>more_vert</i>
-            <menu class="left no-wrap"><a>Remove</a></menu>
+        <button class="chip circle no-border transparent">
+            <i>more_vert</i>
+            <menu class="left no-wrap">
+                <a @click="clear_images('{{ directory_info.path }}')">clear images</a>
+            </menu>
         </button>
     </nav>
 
     <div style="flex-grow: 1;">
         <div class="row">
-            <i class="secondary-text">image</i>
+            <i class="secondary-text">{{ 'image' if not directory_info.labels else 'folder' }}</i>
             <div class="max">
                 <span>{{ directory_info.no_images }}</span> {{ 'images' if not directory_info.labels else 'folders' }}
             </div>
@@ -34,3 +37,5 @@
     </a>
 
 </article>
+
+

@@ -41,11 +41,8 @@ def get_username(filename):
         return parts[1]
     else:
         return "Title" 
-    
-# create directory if not exists
-def create_directory(dir):
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+
+        
 # check if file exists
 def file_exists(file):
     return os.path.exists(file)
@@ -97,7 +94,7 @@ def label_images():
 
         # Update JSON file with labeled image
         labeled_images.append(image_path)
-        with open('labeled_images.json', 'w', encoding="utf-8") as file:
+        with open('model/labeled_images.json', 'w', encoding="utf-8") as file:
             json.dump(labeled_images, file)
 
     return 'Image labeled successfully!'
@@ -150,7 +147,7 @@ def label_test_images():
                 result_label = 'good'
 
         labeled_images.append(image_path)
-        with open('labeled_images.json', 'w', encoding='utf-8') as file:
+        with open('model/labeled_images.json', 'w', encoding='utf-8') as file:
             json.dump(labeled_images, file)
         
         return f"Image labeled as {result_label}!"
@@ -189,6 +186,65 @@ async def upload_image():
     else:
         return jsonify(error="Invalid image type"), 415
     
+    
+
+
+@app.route('/directory')
+def directory():
+    path = request.args.get('path', default = ".", type = str)
+    
+    if not os.path.commonpath([path]).startswith(os.path.commonpath([model_dir, training_folder])):
+        return jsonify(error="Invalid path"), 400
+
+    if not os.path.exists(path):
+        return jsonify(error="Directory does not exist"), 404
+
+
+    return render_template('directory.html', path=path)
+
+# Route to get directory images
+@app.route('/get_directory_images')
+def get_directory_images():
+    path = request.args.get('path', default = ".", type = str)
+    offset = request.args.get('offset', default = 0, type = int)
+    limit = request.args.get('limit', default = 50, type = int)
+
+    if not os.path.commonpath([path]).startswith(os.path.commonpath([model_dir, training_folder])):
+        return jsonify(error="Invalid path"), 400
+
+    if not os.path.exists(path):
+        return jsonify(error="Directory does not exist"), 404
+
+    directories = [os.path.join(path, name) for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
+    images_and_titles = [(os.path.join(path, image), get_username(image)) for image in os.listdir(path) if image.lower().endswith(('.png', '.jpg', '.jpeg'))]
+
+    # Apply offset and limit only to images
+    images_and_titles = images_and_titles[offset : offset + limit]
+    
+    next_offset = offset + limit
+    
+    return render_template('image_card.html', path=path, directories=directories, images=images_and_titles, offset=next_offset)
+
+
+# Route to delete an image
+@app.route('/delete_image', methods=['POST'])
+def delete_image():
+    image_path = request.form['image_path']
+
+    if not os.path.commonpath([image_path]).startswith(os.path.commonpath([model_dir, training_folder])):
+        return jsonify(error="Invalid image path"), 400
+
+    if not os.path.exists(image_path):
+        return jsonify(error="Image does not exist"), 404
+
+    try:
+        os.remove(image_path)
+    except Exception as e:
+        return jsonify(error=str(e)), 500
+
+    return 'Image deleted successfully!'
+
+
     
 @app.route('/get_images')
 def get_images():

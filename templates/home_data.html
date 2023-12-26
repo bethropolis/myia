@@ -77,9 +77,17 @@
                     <td>{{ ((model.size / (1024 * 1024)) | round(2)) }} MB</td>
                     <td>{{ (model.evaluation.average_accuracy | round(2)) }}</td>
                     <td>{{ (model.evaluation.average_loss | round(2)) }}</td>
-                    <td><a class="tertiary-text"
+
+                    
+                    <td>
+                    {% if model.evaluation.graph_path %}    
+                        <a class="tertiary-text"
                             href="{{ url_for('static', filename='images/'+model.evaluation.graph_path) }}"
-                            target="_blank">View Graph</a></td>
+                            target="_blank">View Graph</a>
+                    {% else %}
+                        <span class="secondary-text">No graph</span>
+                    {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>

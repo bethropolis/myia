@@ -1,0 +1,37 @@
+{% extends "index.html" %}
+
+{% block title %}{{ path }}{% endblock %}
+
+{% block content %}
+<main class="responsive">
+    <header class="surface-container-lowest">
+        <nav>
+            <h5 class="max">{{ path }}</h5>
+            <button class="circle transparent" id="upload-button">
+                <i>file_upload</i>
+            </button>
+        </nav>
+    </header>
+    <main hx-get="/get_directory_images?path={{ path }}" hx-target="#grid" hx-trigger="load">
+        <div class="grid" id="grid" x-transition>
+            <div class="medium-height middle-align center-align s12 surface-container-lowest">
+                <div class="center-align">
+                    <progress class="circle large"></progress>
+                    <h6 class="max">Loading...</h6>
+                </div>
+            </div>
+        </div>
+        <div class="center-align middle-align small-height">
+            <progress class='htmx-indicator circle small' />
+        </div>
+    </main>
+</main>
+{% endblock %}
+
+{% block script %}
+<script>
+    document.getElementById('upload-button').addEventListener('click', function () {
+        // Handle upload action here
+    });
+</script>
+{% endblock %}

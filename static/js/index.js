@@ -38,22 +38,32 @@ async function label_good(image_url, type, prediction = 0) {
   trigger_load();
 }
 
+
+function makeToast(text, duration = 3000, backgroundColor = "#ff0000") {
+  Toastify({
+    text: text,
+    duration: duration,
+    close: true,
+    gravity: "top", // `top` or `bottom`
+    position: "center", // `left`, `center` or `right`
+    backgroundColor: backgroundColor,
+  }).showToast();
+}
+
 document.addEventListener("DOMContentLoaded", function (event) {
 
 
   htmx.on('htmx:afterRequest', (evt) => {
+
+    console.log(evt.detail);
     if (evt.detail.failed) {
-      Toastify({
-        text: "Request failed, could not reach server.",
-        duration: 3000,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "center", // `left`, `center` or `right`
-        backgroundColor: "#ff0000",
-      }).showToast();
-
-
+      // if error messsage is present
+      if (evt.detail.xhr.response.includes("error")) {
+        makeToast(evt.detail.xhr.response);
+      } else {
+        makeToast("Something went wrong!");
+      }
     }
-  })
+  });
 }
 );

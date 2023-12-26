@@ -75,22 +75,6 @@ def evaluate_and_visualize_model(model_path, test_good_dir, test_bad_dir, model_
             predictions_good = np.power(predictions_good, 1.0 / temperature)
             predictions_bad = np.power(predictions_bad, 1.0 / temperature)
             
-    if data_augmentation:
-        test_datagen = ImageDataGenerator(
-            rotation_range=configs.get('rotation_range', 10),
-            width_shift_range=configs.get('width_shift_range', 0.1),
-            height_shift_range=configs.get('height_shift_range', 0.1),
-            shear_range=configs.get('shear_range', 0.2),
-            zoom_range=configs.get('zoom_range', 0.2),
-            horizontal_flip=configs.get('horizontal_flip', True),
-            fill_mode=configs.get('fill_mode', 'nearest')
-        )
-        
-        test_generator_good = test_datagen.flow(test_images_good, test_labels_good, shuffle=False)
-        predictions_good = model.predict(test_generator_good)
-        
-        test_generator_bad = test_datagen.flow(test_images_bad, test_labels_bad, shuffle=False)
-        predictions_bad = model.predict(test_generator_bad)
             
     plt.figure(figsize=(10, 6))
 

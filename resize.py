@@ -38,8 +38,6 @@ def resize_image(input_dir, output_dir, filename, target_size, overwrite=False):
 
 if __name__ == "__main__":
     for filename in os.listdir(input_dir):
-        if filename.endswith(".png") or filename.endswith(".jpg"): # Check for image files
+        if filename.endswith(".png") or filename.endswith(".jpg"):
             resize_image(input_dir, output_dir, filename, target_size)
-       
-       
-print("Resizing complete!")
+            print("Resizing complete!")

@@ -1,23 +1,56 @@
 {% extends 'index.html' %}
 
-{% block title %}Home{% endblock %} 
+{% block title %}Home{% endblock %}
 
 {% block header %}
 <style>
     .date {
         font-size: 0.7rem;
     }
+
+    .dialog.right {
+        opacity: 1;
+        padding: 1rem;
+        inset: 0 0 auto auto;
+        inline-size: auto;
+        block-size: 100%;
+        max-block-size: 100%;
+        border-radius: 1rem 0 0 1rem;
+        background-color: var(--surface);
+        z-index: 100;
+    }
 </style>
 {% endblock %}
 
 
 {% block content%}
-<main class="responsive" hx-get="/home_data" hx-trigger="load" >
-   
+
+<main class="responsive" x-data="{ modalOpen: false }" x-on:keydown.escape="modalOpen = false">
+    <header class="surface-container-lowest">
+        <nav>
+            <h5 class="max">Dashboard</h5>
+            <button class="circle transparent" @click="modalOpen = true">
+                <i>info</i>
+            </button>
+        </nav>
+    </header>
+    <div id="info-container" hx-get="/home_data" hx-trigger="load">
+
+    </div>
+
+    <div class="dialog right fixed" role="dialog" tabindex="-1" x-show="modalOpen" x-on:click.away="modalOpen = false" x-cloak x-transition>
+        <h5>Right</h5>
+        <div>Some text here</div>
+        <nav class="right-align">
+            <button class="border" @click="modalOpen = false">Cancel</button>
+            <button>Confirm</button>
+        </nav>
+    </div>
 </main>
 
 
-{% endblock %} 
+
+{% endblock %}
 
 {% block script %}
 

@@ -1,0 +1,53 @@
+{% for dir in directories %}
+
+{% include 'directory_card.html' %}
+
+{% endfor %}
+
+{% for image_url, title in images %}
+<div class="s6 m4 l3" x-data="{ unlabled: true }" x-show="unlabled"
+{% if loop.last %}
+hx-get="/get_directory_images?path={{ path }}&offset={{ offset }}"
+hx-trigger="revealed"
+hx-swap="afterend settle:1s"
+hx-target="this"
+hx-indicator=".htmx-indicator"
+{% endif %}
+>
+    <article class="no-padding border">
+        <img class="responsive medium" loading="lazy" src="{{ image_url }}">
+        <div class="absolute bottom left right padding bottom-shadow white-text">
+            <nav>
+                <h6 style="width:120px;">{{ title }}</h6>
+                <div class="max"></div>
+                <button class="circle transparent" @click="delete_image('{{ image_url }}')" x-on:click="unlabled = false">
+                    <i>delete</i>
+                </button>
+            </nav>
+        </div>    
+    </article> 
+</div>  
+{% endfor %}
+
+
+{% block script %}
+<script>
+    function delete_image(image_url) {
+        axios.post('/delete_image', {
+            image_path: image_url
+        }, {
+            headers: {
+                'Content-Type': "application/x-www-form-urlencoded"
+            }
+        }).then(function (response) {
+            if (response.status != 200) {
+                makeToast('An error occured while deleting the image');
+            }
+        }).catch(function (error) {
+            console.log(error);
+            makeToast('An error occured while deleting the image');
+        });
+    }
+</script>
+
+{% endblock %}

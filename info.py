@@ -1,8 +1,11 @@
 import json
 import os
 import time
+from extra.dir import create_directory
 
 def get_directory_info(directory_path, labels):
+    
+    create_directory(directory_path);
     
     info = {
         'path': directory_path,
@@ -50,9 +53,12 @@ def get_model_evaluation(model_name):
         return data[model_name]
     else:
         return {
-            'accuracy_good': 0.0,
-            'accuracy_bad': 0.0,
-            'loss_good': 0.0,
-            'loss_bad': 0.0,
-            'graph_path': ''
+        "accuracy_good": 0.0,
+        "accuracy_bad": 0.0,
+        "loss_good": 0.0,
+        "loss_bad": 0.0,
+        "average_accuracy": 0.0,
+        "average_loss": 0.0,
+        "graph_path": "",
+        "static_path": ""
         }

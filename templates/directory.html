@@ -35,7 +35,7 @@
     </main>
 
 
-    <dialog class="dialog" x-bind:class="showModal ? 'active': ''"  @keydown.escape="showModal = false" x-transition>
+    <dialog class="dialog" x-bind:class="showModal ? 'active': ''" @keydown.escape="showModal = false" x-transition>
         <div class="modal-body">
             <ul class="tabs">
                 <div>
@@ -79,14 +79,14 @@
                     </div>
                 </div>
                 <div x-show="tab === 'uploadFromURLs'" x-data="{ url: '' }">
-                    <form class="medium-padding middle-align center-align row vertical field" hx-post="/upload-url"
-                        hx-target="#indicate" hx-indicator="#indicate">
+                    <form class="medium-padding middle-align center-align row vertical field"
+                        hx-post="/upload_url?path={{ path }}" hx-target="#indicate" hx-indicator="#indicate">
                         <div class="field border medium-width">
-                            <input type="text" class="max fill" name="url" placeholder="Enter URL">
+                            <input type="text" class="max fill" name="url" x-model="url" placeholder="Enter URL">
                         </div>
                         <div class="field">
-                            <button type="submit" class="button border small-round" x-bind:disabled="url == ''"
-                                x-bind:class="url == '' ? 'disabled' : ''">Upload</button>
+                            <button type="submit" class="button border small-round"
+                                x-bind:disabled="url == ''">Upload</button>
                         </div>
                     </form>
                 </div>
@@ -94,9 +94,9 @@
                     <p>Coming Soon</p>
                 </div>
             </div>
-                <div class="right-align">
-                    <button class="button border" @click="showModal = false">Close</button>
-                </div>
+            <div class="right-align">
+                <button class="button border" @click="showModal = false">Close</button>
+            </div>
         </div>
     </dialog>
 

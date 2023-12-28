@@ -3,6 +3,7 @@ from flask import Flask, Response, abort, config, render_template, request, json
 from extra.error import error_response
 from extra.random import random_string
 from info import get_directory_info, get_model_info
+from image_uploader import upload_image_from_url
 from model_builder import create_model
 from predict import predict_image_class
 from resize import resize_image
@@ -56,6 +57,7 @@ def get_models():
         for file in files:
             if file.lower().endswith(('.keras', '.h5')):
                 models.append(file)
+    models = sorted(models)
     return models
      
 # Function to load labeled images from JSON file
@@ -211,7 +213,15 @@ def upload_images():
     
     
 
-
+# Route to upload image from url
+@app.route('/upload_url', methods=['POST'])
+def upload_image_url():
+    storage_path = request.args.get('path', default=train_image_dir, type=str)
+    url = request.form['url']
+    result, status_code = upload_image_from_url(url, storage_path)
+    return result, status_code
+    
+   
 @app.route('/directory')
 def directory():
     path = request.args.get('path', default = ".", type = str)

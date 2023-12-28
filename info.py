@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 from extra.dir import create_directory
 
@@ -36,6 +37,9 @@ def get_model_info(model_dir):
                     'evaluation': get_model_evaluation(file), 
                     'path': model_path
                 })
+
+    # Sort the models 
+    models = sorted(models, key=lambda model: [int(t) if t.isdigit() else t.lower() for t in re.split(r'(\d+)', model['name'])])
 
     return {
         'no_models': len(models),

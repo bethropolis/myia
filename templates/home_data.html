@@ -16,9 +16,7 @@
     }
 
     .fit-content {
-        column-width: fit-content;
-        -webkit-column-width: fit-content;
-        -moz-column-width: fit-content;
+        width: 30%;
     }
 
     @media screen and (max-width: 600px) {
@@ -74,7 +72,15 @@
 
 <!-- Models section -->
 <div class="models small-margin">
-    <h4>Models</h4>
+    <nav class=" small-margin small-padding">
+        <h4 class="max">Models</h4>
+        <div>
+            <button @click="modelpage = true">
+                <i>add</i>
+                <span>Build model</span>
+            </button>
+        </div>
+    </nav>
     <div class="small-height responsive-table">
         <table>
             <thead>
@@ -123,10 +129,4 @@
     </div>
 
 
-    <div class="right-align">
-        <button @click="modelpage = true">
-            <i>add</i>
-            <span>Build model</span>
-        </button>
-    </div>
 </div>

@@ -1,5 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras import layers, models
+from extra.version import generate_version_name 
 import numpy as np
 from PIL import Image
 import os
@@ -78,8 +79,6 @@ def create_model(train_good_dir, train_bad_dir, config):
         # Train the model
         model.fit(train_images, train_labels, epochs=config['epochs'])
 
-        # Generate model name and path
-        from extra.version import generate_version_name  # Assuming this function is in a module named 'extra'
         model_name = generate_version_name("myia_image_classifier.keras", "model/image_model")
         model_path = f"model/image_model/{model_name}"
 
@@ -94,7 +93,6 @@ def create_model(train_good_dir, train_bad_dir, config):
 
 
 if __name__ == "__main__":
-    # Create a model with 10 dense layers and train for 10 epochs
     config = {"epochs": 15, "no_layers": 2}
     model = create_model("model/labeled/good", "model/labeled/bad", config)
     print(model)

@@ -63,11 +63,10 @@
     </div>
 
     <dialog class="max" x-bind:class="modelpage ? 'active': ''" x-transition>
-        <h5>Fullscreen</h5>
-        <div>Some text here</div>
-        <nav class="right-align">
+        {% include 'model_builder.html' %}
+        <div class="right-align absolute right bottom small-padding">
             <button class="border" @click="modelpage = false">Close</button>
-        </nav>
+        </div>
     </dialog>
 </main>
 

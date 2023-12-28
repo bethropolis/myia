@@ -1,0 +1,30 @@
+<div x-data="{ layers: 1, epochs: 10, model_name: 'default_model' }">
+
+    <h2>Build your model</h2>
+
+
+    <form class="medium-width" hx-post="/build_model" hx-target="#output" hx-indicator="#loader">
+
+        <div class="field border small">
+            <input type="number" id="layers" name="layers" value="1" min="1" max="5">
+            <span class="helper">Number of layers:</span>
+        </div>
+
+        <div class="field border small">
+            <input type="number" id="epochs" name="epochs" value="15" min="1">
+            <span class="helper">Epochs:</span>
+        </div>
+
+        <div class="field border small">
+            <input type="text" id="model_name" placeholder="myia_image_classifier" name="model_name">
+            <span class="helper">Model name:</span>
+        </div>
+        <button type="submit" class="button">Build</button>
+    </form>
+
+    <div id="output"></div>
+    <div id="loader" class="medium-height small-space middle-align htmx-indicator">
+         <progress class="circle"></progress>
+        <span class="medium-text">building model...</span>  
+    </div>
+</div>

@@ -3,6 +3,7 @@ from flask import Flask, Response, abort, config, render_template, request, json
 from extra.error import error_response
 from extra.random import random_string
 from info import get_directory_info, get_model_info
+from model_builder import create_model
 from predict import predict_image_class
 from resize import resize_image
 from validation import evaluate_and_visualize_model
@@ -123,6 +124,25 @@ def get_home_data():
     
     return render_template('home_data.html', data=data)
     
+# Route to build model
+@app.route('/build_model', methods=['POST'])
+async def build_model():
+    layers = request.form.get('layers', default=1, type=int)
+    epochs = request.form.get('epochs', default=10, type=int)
+    model_name = request.form.get('model_name', default='myia_image_classifier', type=str)
+    
+    build_model = create_model(label_good_dir, label_bad_dir, {'epochs': epochs, 'no_layers': layers})
+    
+    if build_model:
+        model_path = build_model['model_path']
+        model_name = build_model['model_name']
+        return f"Model {model_name} created successfully!"
+    else:
+        return error_response("Model creation failed", 500)
+    
+    
+    
+
     
 # route to label images and update JSON file for test
 @app.route('/test_label', methods=['POST'])
@@ -298,7 +318,7 @@ def get_images():
 def random_image():
     models = get_models()
     choosen_model = request.args.get('model', default = models[0], type = str)
-    passed_image = request.args.get('image', default = None, type = str)
+    passed_images = request.args.getlist('image')
     
     if not file_exists(os.path.join(models_dir, choosen_model)):
         return error_response("Model does not exist", 404)
@@ -312,13 +332,10 @@ def random_image():
         for image in images:
             if image not in labeled_images:
                 return image
-            
-     
-    if passed_image is None or not file_exists(passed_image):
-        image = get_random_image()
-    else:
-        image = passed_image  
-          
+
+    # Use the first image that exists, or get a random image if none exist
+    image = next((img for img in passed_images if img and file_exists(img)), get_random_image())
+
     if image is not None:
         prediction = round((predict_image_class(model_path, image) * 100),2)
         response_data = {'image': image, 'prediction': prediction}
@@ -326,14 +343,12 @@ def random_image():
     else:
         return error_response("The test directory is empty", 404)
 
-
 # route to get available models
 @app.route('/models')
 def get_available_models():
     models = get_models()
     return jsonify(models)
 
-   
 # Route to get test validation of models
 @app.route('/validation')
 def test_validation():

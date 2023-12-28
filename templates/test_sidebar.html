@@ -20,7 +20,7 @@
         </div>
         <!-- Image upload form -->
         <div class="field suffix label border">
-            <form id="form" hx-post="/upload" hx-trigger="change" hx-target="#counter" hx-swap="innerHTML"
+            <form id="form" hx-post="/upload?test=true" hx-trigger="change" hx-target="#counter" hx-swap="innerHTML"
                 enctype="multipart/form-data">
                 <label id="upload-label" for="image-upload"
                     class="primary row large-round tiny-padding small-width middle-align center-align">

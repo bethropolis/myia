@@ -2,7 +2,6 @@
 <style>
     .responsive-table {
         width: 100%;
-        overflow-x: auto;
     }
 
     .responsive-table td, .responsive-table th {
@@ -94,6 +93,8 @@
                             <i>more_vert</i>
                             <menu class="left absolute no-wrap surface-container-low" style="z-index: 44;">
                                 <a>fine tune</a>
+                                <a href="/test?model={{ model.name }}">test</a>
+                                <a href="{{ model.path }}" download>download</a>
                                 <a @click="delete_image('{{ model.path }}')">delete</a>
                             </menu>
                         </button>

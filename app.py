@@ -110,8 +110,8 @@ def get_home_data():
     directories = {
         'training': get_directory_info(train_image_dir, []),
         'test': get_directory_info(test_image_dir, []),
-        'evaluation': get_directory_info(evaluation_image_dir, ['good', 'bad']),
         'labeled': get_directory_info(label_image_dir, ['good', 'bad']),
+        'evaluation': get_directory_info(evaluation_image_dir, ['good', 'bad']),
     }
 
     models = get_model_info(models_dir)
@@ -156,38 +156,37 @@ def label_test_images():
         return f"Image labeled as {result_label}!"
             
 
-# Route to upload image
+# route to upload images
 @app.route('/upload', methods=['POST'])
-async def upload_image():
-    path_type = request.args.get('type', default = "user_upload", type = str)
-    image = request.files['image']
-    
-    list_of_path_type = {
-        "test": test_image_dir,
-        "train": train_image_dir,
-        "user_upload": usr_upload_dir
-    }
-    
-    if path_type not in list_of_path_type:
-        return jsonify(error="Invalid path type"), 400
-    
-    storage_path = list_of_path_type.get(path_type) or test_image_dir
-    
-    # allow only images type png, jpg
-    if image.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-        file_name = "user_upload_" + random_string() + ".png"  # Ensure PNG extension
-        image_path = os.path.join(storage_path, file_name)
+def upload_images():
+    storage_path = request.args.get('path', default=train_image_dir, type=str)
+    test_params = request.args.get('test', default=False, type=bool)
 
-        try:
-            image.save(image_path)  # Save as PNG
-            resize_image(storage_path, storage_path, file_name, (200, 150), overwrite=True)
+    # Check if the storage path is within the allowed directories
+    if not os.path.commonpath([storage_path]).startswith(os.path.commonpath([model_dir, training_folder])):
+        return error_response("Invalid path", 400)
 
-        except Exception as e:
-            return error_response(str(e), 500)
-        
+    images = request.files.getlist('image')
+    uploaded_images = []
+    image_path = None
+    for image in images:
+        # allow only images type png, jpg
+        if image.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+            file_name = "user_upload_" + random_string() + ".png"  # Ensure PNG extension
+            image_path = os.path.join(storage_path, file_name)
+
+            try:
+                image.save(image_path)  # Save as PNG
+                resize_image(storage_path, storage_path, file_name, (200, 150), overwrite=True)
+                uploaded_images.append(image_path)
+            except Exception as e:
+                return error_response(str(e), 500)
+        else:
+            return error_response("Invalid file type", 400)
+    if test_params:
         return render_template('upload_image.html', image=image_path)
     else:
-        return jsonify(error="Invalid file type"), 400
+        return 'Image(s) uploaded successfully!'
     
     
 

@@ -6,7 +6,7 @@
 }}{% endblock %}
 
 {% block content %}
-<main class="responsive">
+<main class="responsive" x-data="{ showModal: false, tab: 'uploadFromComputer' }">
     <header class="surface-container-lowest">
         <nav>
             <h5 class="max">{{ path }}</h5>
@@ -14,7 +14,7 @@
                 <i>delete</i>
                 <div class="tooltip bottom  medium-space">Clear images</div>
             </button>
-            <button class="circle transparent" id="upload-button">
+            <button class="circle transparent" id="upload-button" @click="showModal = !showModal">
                 <i>file_upload</i>
                 <div class="tooltip bottom left  medium-space">Upload images</div>
             </button>
@@ -33,6 +33,53 @@
             <progress class='htmx-indicator circle small' />
         </div>
     </main>
+
+
+    <dialog x-show="showModal" x-transition class="active" @keydown.escape="showModal = false"
+        x-on:click.away="showModal = false" x-cloak>
+        <div class="modal-body">
+            <ul class="tabs">
+                <div>
+                    <div class="tabs">
+                        <a :class="tab == 'uploadFromComputer' ? 'active' : ''" @click="tab = 'uploadFromComputer'">
+                            <i>computer</i>
+                            <span>upload from computer</span>
+                        </a>
+                        <a :class="tab == 'uploadFromURLs' ? 'active' : ''" @click="tab = 'uploadFromURLs'">
+                            <i>link</i>
+                            <span>upload from URLs</span>
+                        </a>
+                        <a :class="tab == 'uploadFromOtherDirectory' ? 'active' : ''"
+                            @click="tab = 'uploadFromOtherDirectory'">
+                            <i>folder</i>
+                            <span>upload from other directory</span>
+                        </a>
+                    </div>
+                </div>
+            </ul>
+
+            <div x-show="tab === 'uploadFromComputer'">
+                <form class="medium-padding row field wrapper prefix" hx-post="/upload" hx-target="#indicate"
+                    hx-indicator="#indicate" enctype="multipart/form-data">
+                    <input type="text" name="path" value="{{ path }}" hidden>
+                    <button class="small-round">
+                        <i>attach_file</i>
+                        <span>File</span>
+                        <input type="file" type="file" name="image" multiple @change="dragging = false" id="fileElem"
+                            accept="image/*">
+                    </button>
+                    <button type="submit" class="button border small-round">Upload</button>
+                </form>
+                <span class="small-padding htmx-indicator" id="indicate">uploading images... <progress
+                        class="circle small"></progress></span>
+            </div>
+            <div x-show="tab === 'uploadFromURLs'">
+            </div>
+            <div x-show="tab === 'uploadFromOtherDirectory'">
+            </div>
+        </div>
+    </dialog>
+
 </main>
 {% endblock %}
 
@@ -43,6 +90,11 @@
     });
 
     function clear_images(path) {
+        let c = confirm(`Are you sure you want to clear ${path} `);
+
+        if (!c) {
+            return;
+        }
         axios.post('/clear_directory', {
             path: path
         }, {

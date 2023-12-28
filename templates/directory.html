@@ -14,7 +14,7 @@
                 <i>delete</i>
                 <div class="tooltip bottom  medium-space">Clear images</div>
             </button>
-            <button class="circle transparent" id="upload-button" @click="showModal = !showModal">
+            <button class="circle transparent" id="upload-button" @click="showModal = true">
                 <i>file_upload</i>
                 <div class="tooltip bottom left  medium-space">Upload images</div>
             </button>
@@ -35,8 +35,7 @@
     </main>
 
 
-    <dialog x-show="showModal" x-transition class="active" @keydown.escape="showModal = false"
-        x-on:click.away="showModal = false" x-cloak>
+    <dialog class="dialog" x-bind:class="showModal ? 'active': ''"  @keydown.escape="showModal = false" x-transition>
         <div class="modal-body">
             <ul class="tabs">
                 <div>
@@ -58,25 +57,46 @@
                 </div>
             </ul>
 
-            <div x-show="tab === 'uploadFromComputer'">
-                <form class="medium-padding row field wrapper prefix" hx-post="/upload" hx-target="#indicate"
-                    hx-indicator="#indicate" enctype="multipart/form-data">
-                    <input type="text" name="path" value="{{ path }}" hidden>
-                    <button class="small-round">
-                        <i>attach_file</i>
-                        <span>File</span>
-                        <input type="file" type="file" name="image" multiple @change="dragging = false" id="fileElem"
-                            accept="image/*">
-                    </button>
-                    <button type="submit" class="button border small-round">Upload</button>
-                </form>
-                <span class="small-padding htmx-indicator" id="indicate">uploading images... <progress
-                        class="circle small"></progress></span>
+            <div class="container middle-align center-align small-height">
+                <div x-show="tab === 'uploadFromComputer'" x-data="{ totalFiles: 0 }">
+                    <form id="uploadFromComputer" class="medium-padding middle-align center-align  field"
+                        hx-post="/upload" hx-target="#indicate" hx-indicator="#indicate" enctype="multipart/form-data">
+                        <input type="text" name="path" value="{{ path }}" hidden>
+                        <button class="small-round">
+                            <i>attach_file</i>
+                            <span>Select File(s)</span>
+                            <input type="file" type="file" name="image" multiple
+                                @change="totalFiles = $event.target.files.length; $store.filesUploaded.reset()"
+                                id="fileElem" accept="image/*">
+                        </button>
+                        <button type="submit" class="button border small-round"
+                            x-bind:disabled="totalFiles == 0">Upload</button>
+                    </form>
+
+                    <div class="small-padding htmx-indicator" id="indicate">
+                        <progress id='progress' value='0' max='100'></progress>
+                        <p x-text="`Uploading file ${$store.filesUploaded.uploaded} of ${totalFiles}`"></p>
+                    </div>
+                </div>
+                <div x-show="tab === 'uploadFromURLs'" x-data="{ url: '' }">
+                    <form class="medium-padding middle-align center-align row vertical field" hx-post="/upload-url"
+                        hx-target="#indicate" hx-indicator="#indicate">
+                        <div class="field border medium-width">
+                            <input type="text" class="max fill" name="url" placeholder="Enter URL">
+                        </div>
+                        <div class="field">
+                            <button type="submit" class="button border small-round" x-bind:disabled="url == ''"
+                                x-bind:class="url == '' ? 'disabled' : ''">Upload</button>
+                        </div>
+                    </form>
+                </div>
+                <div x-show="tab === 'uploadFromOtherDirectory'">
+                    <p>Coming Soon</p>
+                </div>
             </div>
-            <div x-show="tab === 'uploadFromURLs'">
-            </div>
-            <div x-show="tab === 'uploadFromOtherDirectory'">
-            </div>
+                <div class="right-align">
+                    <button class="button border" @click="showModal = false">Close</button>
+                </div>
         </div>
     </dialog>
 
@@ -85,10 +105,22 @@
 
 {% block script %}
 <script>
-    document.getElementById('upload-button').addEventListener('click', function () {
-        // Handle upload action here
-    });
 
+    const fileInput = document.getElementById('fileElem');
+
+    document.addEventListener('alpine:init', () => {
+        Alpine.store('filesUploaded', {
+            uploaded: 0,
+
+            set(val) {
+                this.uploaded = val;
+            },
+
+            reset() {
+                this.uploaded = 0;
+            }
+        })
+    })
     function clear_images(path) {
         let c = confirm(`Are you sure you want to clear ${path} `);
 
@@ -102,13 +134,20 @@
                 'content-type': 'application/x-www-form-urlencoded'
             }
         }).then(function (response) {
-            if (response.data.status == 'success') {
+            if (response.request.status == 200) {
                 window.location.reload();
             }
         }).catch(function (error) {
             console.log(error);
         });
     }
+
+    htmx.on('#uploadFromComputer', 'htmx:xhr:progress', function (evt) {
+        const no_of_files = fileInput.files.length;
+        uploadedFilesCount = Math.round(evt.detail.loaded / evt.detail.total * no_of_files);
+        Alpine.store('filesUploaded').set(uploadedFilesCount);
+        htmx.find('#progress').setAttribute('value', evt.detail.loaded / evt.detail.total * 100)
+    });
 
 </script>
 {% endblock %}

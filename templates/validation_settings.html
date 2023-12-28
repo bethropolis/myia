@@ -64,15 +64,21 @@
   </div>
 </form>
 
-{% block script %}
+{% block scripts %}
 
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // htmx:sendError event
+let main = document.querySelector('#result');
+let form = document.querySelector('form');
 
-    document.body.addEventListener("htmx:sendError", function (event) {
-      console.log(event.detail);
-    });
-  });
+function handleError(evt) {
+  main.innerHTML = `<div class="row vertical center-align middle-align full-height">
+                      <h5>Error loading image</h5>
+                      <p>${evt.detail.error}</p>
+                      <code>${evt.detail.xhr.responseText}</code>
+                    </div>`;  
+}
+
+form.addEventListener("htmx:responseError", handleError);
 </script>
+
 {% endblock %}

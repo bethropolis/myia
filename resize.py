@@ -2,7 +2,7 @@ from PIL import Image
 import os
 
 # Define the directory where your screenshots are stored
-input_dir = 'training/test'
+input_dir = '.browserImages/screenshots'
 
 # Define the output directory for resized images
 output_dir = 'training/images'
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     for filename in os.listdir(input_dir):
         if filename.endswith(".png") or filename.endswith(".jpg"):
             resize_image(input_dir, output_dir, filename, target_size, True)
-            print("Resizing complete!")
+    print("Resizing complete!")

@@ -179,6 +179,7 @@ def upload_images():
                 image.save(image_path)  # Save as PNG
                 resize_image(storage_path, storage_path, file_name, (200, 150), overwrite=True)
                 uploaded_images.append(image_path)
+                
             except Exception as e:
                 return error_response(str(e), 500)
         else:
@@ -212,16 +213,20 @@ def get_directory_images():
     limit = request.args.get('limit', default = 50, type = int)
 
     if not os.path.commonpath([path]).startswith(os.path.commonpath([model_dir, training_folder])):
-        return jsonify(error="Invalid path"), 400
+        return error_response("Invalid path", 400)
 
     if not os.path.exists(path):
-        return jsonify(error="Directory does not exist"), 404
+        return error_response("Directory does not exist", 404)
 
     directories = [os.path.join(path, name) for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
     images_and_titles = [(os.path.join(path, image), get_username(image)) for image in os.listdir(path) if image.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
     # Apply offset and limit only to images
-    images_and_titles = images_and_titles[offset : offset + limit]
+    if limit > len(images_and_titles):
+        actual_limit = len(images_and_titles) 
+    else:
+        actual_limit = offset + limit  
+    images_and_titles = images_and_titles[offset : actual_limit]
     
     next_offset = offset + limit
     
@@ -313,8 +318,7 @@ def random_image():
         image = get_random_image()
     else:
         image = passed_image  
-        
-    print("current image: ", image)    
+          
     if image is not None:
         prediction = round((predict_image_class(model_path, image) * 100),2)
         response_data = {'image': image, 'prediction': prediction}
@@ -344,8 +348,12 @@ async def get_validation_results():
     models = get_models()
     
     if model not in models:
-        return error_response("Model does not exist", 404)
+        return error_response("evaluation failed: Model does not exist", 404)
     
+    if not os.path.exists(label_good_dir) or not os.path.exists(label_bad_dir) or len(os.listdir(label_good_dir)) == 0 or len(os.listdir(label_bad_dir)) == 0:    
+        return error_response("evaluation failed: No labeled images", 404)      
+    
+      
     model_path = os.path.join(models_dir, model) 
     temperature = request.form.get("temperature", 1.0)
     augmentation = request.form.get('augmentation', '')
@@ -357,6 +365,7 @@ async def get_validation_results():
     
     graph_image = evaluate_and_visualize_model(model_path, label_good_dir, label_bad_dir,model, configs)
     return render_template('validation_results.html', graph_image=graph_image, random_string=random_string)
+        
 
 
 @app.route('/training/<path:filename>')

@@ -12,12 +12,28 @@
         opacity: 1;
         padding: 1rem;
         inset: 0 0 auto auto;
-        inline-size: auto;
+        inline-size: 50%;
         block-size: 100%;
         max-block-size: 100%;
         border-radius: 1rem 0 0 1rem;
         background-color: var(--surface);
         z-index: 100;
+    }
+
+    code {
+        font-family: 'Fira Code', monospace;
+        font-size: 0.8rem;
+        background-color: var(--secondary-container);
+        padding: 0.2rem;
+        border-radius: 0.2rem;
+    }
+
+    .show {
+        display: block;
+    }
+
+    .hide {
+        display: none;
     }
 </style>
 {% endblock %}
@@ -25,7 +41,7 @@
 
 {% block content%}
 
-<main class="responsive" x-data="{ modalOpen: false }" x-on:keydown.escape="modalOpen = false">
+<main class="responsive" x-data="{ modalOpen: false, modelpage: false }" x-on:keydown.escape="modalOpen = false">
     <header class="surface-container-lowest">
         <nav>
             <h5 class="max">Dashboard</h5>
@@ -38,14 +54,21 @@
 
     </div>
 
-    <div class="dialog right fixed" role="dialog" tabindex="-1" x-show="modalOpen" x-on:click.away="modalOpen = false" x-cloak x-transition>
-        <h5>Right</h5>
-        <div>Some text here</div>
+    <div class="dialog right fixed" style="display: none;" role="dialog" tabindex="-1" x-show="modalOpen"
+        x-bind:class="modalOpen ? 'show': 'hide'" x-on:click.away="modalOpen = false" x-cloak x-transition>
+        {% include 'home_docs.html' %}
         <nav class="right-align">
-            <button class="border" @click="modalOpen = false">Cancel</button>
-            <button>Confirm</button>
+            <button class="border" @click="modalOpen = false">close</button>
         </nav>
     </div>
+
+    <dialog class="max" x-bind:class="modelpage ? 'active': ''" x-transition>
+        <h5>Fullscreen</h5>
+        <div>Some text here</div>
+        <nav class="right-align">
+            <button class="border" @click="modelpage = false">Close</button>
+        </nav>
+    </dialog>
 </main>
 
 

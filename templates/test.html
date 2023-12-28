@@ -37,8 +37,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   let main = document.querySelector('#counter');
 
+  function retest(img){
+    let hxVals = JSON.parse(main.getAttribute('hx-vals') || '{}');
+    hxVals.image = img;
+    main.setAttribute('hx-vals', JSON.stringify(hxVals));
+    htmx.process(main);
+
+    htmx.trigger('#counter', 'pageLoaded');
+  }
+
+  function remove_vals_img(){
+    let hxVals = JSON.parse(main.getAttribute('hx-vals') || '{}');
+    delete hxVals.image;
+    main.setAttribute('hx-vals', JSON.stringify(hxVals));
+    htmx.process(main);
+  }
+
   function change_model(model) {
-    console.log(model);
     main.setAttribute('hx-vals', '{"model": "'+model+'"}');
     htmx.process(main);
   } 

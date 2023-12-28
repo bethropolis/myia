@@ -56,10 +56,10 @@ htmx.on('htmx:responseError', (evt) => {
   if (evt.detail.failed || evt.detail.xhr.status != 200) {
     // if responseText
     if (evt.detail.xhr.responseText) {
-      makeToast(evt.detail.xhr.responseText, 3000, "#ff0000");
+      makeToast(evt.detail.xhr.responseText);
     }
     else {
-      makeToast("Something went wrong");
+      makeToast("An error occured");
     }
   }
 });

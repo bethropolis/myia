@@ -1,8 +1,18 @@
-# MYIA 
-_my image AI_
-
-
+<h1>MYIA </h1>
 this is a nocode platform for training, testing, evaluating, and building image classifier models 
+
+
+
+<h2>Table of Contents</h2>
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [License](#license)
+
+
 
 
 ## Features
@@ -19,6 +29,7 @@ this is a nocode platform for training, testing, evaluating, and building image 
 
 
   
+---
 
 ## Installation
 
@@ -56,6 +67,8 @@ this is a nocode platform for training, testing, evaluating, and building image 
     ```
     > open your browser and go to http://localhost:5000
 
+
+---
 ## Usage 
 
 1. Upload images to the app
@@ -107,8 +120,25 @@ this is a nocode platform for training, testing, evaluating, and building image 
     - The evaluation results will be saved in the `model` directory as a `json` file and a graph will be generated and saved in the `static` directory as a `png` file
 
 
+---
 
 ## Screenshots
+
+| Image                                                                                                 | Description                                   |
+| ----------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| <img src=".githubasserts/sXaWmI.png" alt="A screenshot of the Home page" width="50%">                 | A screenshot of the Home page                 |
+| <img src=".githubasserts/MDXRag.png" alt="A screenshot of the Training page" width="50%">             | A screenshot of the Training page             |
+| <img src=".githubasserts/K7FsFs.png" alt="A screenshot of the Testing page" width="50%">              | A screenshot of the Testing page              |
+| <img src=".githubasserts/kYC2IV.png" alt="A screenshot of the Evaluation page" width="50%">           | A screenshot of the Evaluation page           |
+| <img src=".githubasserts/WrkCxS.png" alt="A screenshot of a directory" width="50%">                   | A screenshot of a directory                   |
+| <img src=".githubasserts/ZU56Ln.png" alt="A screenshot of a directory" width="50%">                   | A screenshot of a directory                   |
+| <img src=".githubasserts/y8nSeH.png" alt="A screenshot of the page for building a model" width="50%"> | A screenshot of the page for building a model |
+
+
+---
+
+## Contributing
+Feel free to ping me a pull requests if you want to contribute.
 
 
 
@@ -116,3 +146,6 @@ this is a nocode platform for training, testing, evaluating, and building image 
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+
+happy coding 💜

@@ -32,6 +32,8 @@ jobs:
         uses: actions/configure-pages@v4
       - name: Create Directory
         run: mkdir _site
+      - name: move asserts Directory
+        run: mv .githubasserts _site
       - name: Converts Markdown to HTML
         uses: jaywcjlove/markdown-to-html-cli@main
         with:

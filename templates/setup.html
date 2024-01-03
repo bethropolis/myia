@@ -1,0 +1,36 @@
+{% extends 'index.html' %}
+
+
+{% block title %}Setup{% endblock %}
+
+{% block header %}
+<style>
+.grid{
+    padding-top: 5ch;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="responsive">
+    <header class="surface-container-lowest">
+        <nav>
+            <h5 class="max">Setup</h5>
+        </nav>
+    </header>
+
+    <section>
+        <p class="large-text">This setup will create all the necesary directories. required</p>
+        <p class="large-text">Click the setup button, to start</p>
+    </section>
+
+    <div class="grid">
+        <div class="s8 full-height">
+           <button hx-get="/setup" hx-target="#grid" hx-swap="innerHTML" hx-trigger="click">
+            Setup
+           </button>
+        </div>
+
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,9 @@
+[
+    "http://127.0.0.1:5000",
+    "http://127.0.0.1:5000/train",
+    "http://127.0.0.1:5000/test",
+    "http://127.0.0.1:5000/validation",
+    "http://127.0.0.1:5000/directory?path=model/labeled/good",
+    "http://127.0.0.1:5000/directory?path=model/labeled/bad",
+    "http://127.0.0.1:5000/?model_page=true"
+]

@@ -35,6 +35,7 @@ def generate_version_name(file_name, directory='.'):
             print(f"A file with the generated version '{new_file_name}' already exists.")
             return None
         else:
+            print(f"Generated version: {new_file_name}")
             return new_file_name
     else:
         return f"{base_name}_1_0_0{extension}"  # Dynamically adding the extension

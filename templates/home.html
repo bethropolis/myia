@@ -41,7 +41,7 @@
 
 {% block content%}
 
-<main class="responsive" x-data="{ modalOpen: false, modelpage: false }" x-on:keydown.escape="modalOpen = false">
+<main class="responsive" x-data="{ modalOpen: false, modelpage: {{ model_page }} }" x-on:keydown.escape="modalOpen = false">
     <header class="surface-container-lowest">
         <nav>
             <h5 class="max">Dashboard</h5>

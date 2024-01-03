@@ -3,6 +3,8 @@ import os
 import re
 import time
 from extra.dir import create_directory
+from pathlib import Path
+
 
 def get_directory_info(directory_path, labels):
     
@@ -48,22 +50,24 @@ def get_model_info(model_dir):
     }
     
     
+
+
 def get_model_evaluation(model_name):
+    file_path = Path('model/model_evaluations.json')
 
-    # Load evaluation results from the JSON file
-    with open('model/model_evaluations.json', 'r', encoding="utf-8") as f:
-        data = json.load(f)
-
-    if model_name in data:
-        return data[model_name]
+    if file_path.exists():
+        with file_path.open('r', encoding="utf-8") as f:
+            data = json.load(f)
     else:
-        return {
-        "accuracy_good": 0.0,
-        "accuracy_bad": 0.0,
-        "loss_good": 0.0,
-        "loss_bad": 0.0,
-        "average_accuracy": 0.0,
-        "average_loss": 0.0,
-        "graph_path": "",
-        "static_path": ""
+        data = {
+            "accuracy_good": 0.0,
+            "accuracy_bad": 0.0,
+            "loss_good": 0.0,
+            "loss_bad": 0.0,
+            "average_accuracy": 0.0,
+            "average_loss": 0.0,
+            "graph_path": "",
+            "static_path": ""
         }
+
+    return data.get(model_name, data)

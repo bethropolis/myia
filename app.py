@@ -2,6 +2,7 @@ from math import e
 from flask import Flask, Response, abort, config, render_template, request, jsonify, send_from_directory, make_response
 from extra.error import error_response
 from extra.random import random_string
+from setup import create_directories
 from info import get_directory_info, get_model_info
 from image_uploader import upload_image_from_url
 from model_builder import create_model
@@ -39,18 +40,19 @@ def load_images(dir):
                 images.append(os.path.join(root, file))
     return images
 
-def get_username(filename):
-    parts = filename.split('_')
-    if len(parts) >= 2:
-        return parts[1]
-    else:
-        return "Title" 
+def get_title(filename):
+    parts = filename.split('/')
+    parts = parts[-1].split('__')
+    parts = parts[0].split('.')
+    return parts[0] if parts else "Title"
 
         
 # check if file exists
 def file_exists(file):
     return os.path.exists(file)
-    
+
+
+
 def get_models():
     models = []
     for root, dirs, files in os.walk(models_dir):
@@ -72,7 +74,11 @@ def load_labeled_images():
 # Route to send images to frontend
 @app.route('/')
 def index():
-    return render_template('home.html', page='index')
+    model_page = request.args.get('model_page', default = "false", type = str)
+    if not os.path.exists(model_dir):
+        create_directories()
+        
+    return render_template('home.html', page='index', model_page=model_page)
 
 @app.route('/train')
 def train():
@@ -123,6 +129,7 @@ def get_home_data():
         'directories': directories,
         'models': models
     }
+
     
     return render_template('home_data.html', data=data)
     
@@ -133,7 +140,7 @@ async def build_model():
     epochs = request.form.get('epochs', default=10, type=int)
     model_name = request.form.get('model_name', default='myia_image_classifier', type=str)
     
-    build_model = create_model(label_good_dir, label_bad_dir, {'epochs': epochs, 'no_layers': layers})
+    build_model = create_model(label_good_dir, label_bad_dir, {'epochs': epochs,  'no_layers': layers, 'model_name': model_name})
     
     if build_model:
         model_path = build_model['model_path']
@@ -181,7 +188,7 @@ def label_test_images():
 # route to upload images
 @app.route('/upload', methods=['POST'])
 def upload_images():
-    storage_path = request.args.get('path', default=train_image_dir, type=str)
+    storage_path = request.form.get('path', default=train_image_dir, type=str)
     test_params = request.args.get('test', default=False, type=bool)
 
     # Check if the storage path is within the allowed directories
@@ -194,7 +201,8 @@ def upload_images():
     for image in images:
         # allow only images type png, jpg
         if image.filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-            file_name = "user_upload_" + random_string() + ".png"  # Ensure PNG extension
+            image_filename = image.filename.split('.')[0]
+            file_name = image_filename +"__"+ random_string(9) + ".png"  # Ensure PNG extension
             image_path = os.path.join(storage_path, file_name)
 
             try:
@@ -249,7 +257,7 @@ def get_directory_images():
         return error_response("Directory does not exist", 404)
 
     directories = [os.path.join(path, name) for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
-    images_and_titles = [(os.path.join(path, image), get_username(image)) for image in os.listdir(path) if image.lower().endswith(('.png', '.jpg', '.jpeg'))]
+    images_and_titles = [(os.path.join(path, image), get_title(image)) for image in os.listdir(path) if image.lower().endswith(('.png', '.jpg', '.jpeg'))]
 
     # Apply offset and limit only to images
     if limit > len(images_and_titles):
@@ -310,14 +318,14 @@ def get_images():
 
     labeled_images = load_labeled_images()  # Load labeled images from JSON
 
-    images_and_usernames = [(image, get_username(image)) for image in load_images(train_image_dir) if image not in labeled_images]
+    images_and_usernames = [(image, get_title(image)) for image in load_images(train_image_dir) if image not in labeled_images]
 
     # Apply offset and limit
     images_and_usernames = images_and_usernames[offset : offset + limit]
     
     next_offset = offset + limit
     
-    if offset is 0 and len(images_and_usernames) is 0:
+    if offset == 0 and len(images_and_usernames) == 0:
         return error_response("The train directory is empty", 404)
     
     return render_template('image_template.html', images=images_and_usernames, offset=next_offset)
@@ -326,32 +334,37 @@ def get_images():
 
 @app.route('/random_image')
 def random_image():
-    models = get_models()
-    choosen_model = request.args.get('model', default = models[0], type = str)
-    passed_images = request.args.getlist('image')
-    
-    if not file_exists(os.path.join(models_dir, choosen_model)):
-        return error_response("Model does not exist", 404)
-    
-    model_path = os.path.join(models_dir, choosen_model)
-    labeled_images = load_labeled_images()
-    images = load_images(test_image_dir)
-    random.shuffle(images)
-    
-    def get_random_image():
-        for image in images:
-            if image not in labeled_images:
-                return image
+    try:
+        models = get_models()
+        choosen_model = request.args.get('model', default = models[0], type = str)
+        passed_images = request.args.getlist('image')
+        
+        if not file_exists(os.path.join(models_dir, choosen_model)):
+            return error_response("Model does not exist", 404)
+        
+        model_path = os.path.join(models_dir, choosen_model)
+        labeled_images = load_labeled_images()
+        images = load_images(test_image_dir)
+        random.shuffle(images)
+        
+        def get_random_image():
+            for image in images:
+                if image not in labeled_images:
+                    return image
 
-    # Use the first image that exists, or get a random image if none exist
-    image = next((img for img in passed_images if img and file_exists(img)), get_random_image())
+        # Use the first image that exists, or get a random image if none exist
+        image = next((img for img in passed_images if img and file_exists(img)), get_random_image())
 
-    if image is not None:
-        prediction = round((predict_image_class(model_path, image) * 100),2)
-        response_data = {'image': image, 'prediction': prediction}
-        return render_template('random_image_template.html', data=response_data)     
-    else:
-        return error_response("The test directory is empty", 404)
+        if image is not None:
+            prediction = round((predict_image_class(model_path, image) * 100),2)
+            response_data = {'image': image, 'prediction': prediction}
+            return render_template('random_image_template.html', data=response_data)     
+        else:
+            return error_response("The test directory is empty", 404)
+    
+    except Exception as e:
+        return error_response(str(e), 500)
+
 
 # route to get available models
 @app.route('/models')
@@ -361,10 +374,12 @@ def get_available_models():
 
 # Route to get test validation of models
 @app.route('/validation')
-def test_validation():
+def validation():
     models = get_models()
-    choosen_model = request.args.get('model', default = models[0], type = str)
-    return render_template('validation.html', models=models, page='validation', choosen_model=choosen_model)
+    model = models[0] if models else None
+    chosen_model = request.args.get('model', default=model, type=str)
+    return render_template('validation.html', models=models, page='validation', chosen_model=chosen_model)
+
 
 # route to get validation results
 @app.route('/validation_results', methods=['POST'])

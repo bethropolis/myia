@@ -1,8 +1,8 @@
 from PIL import Image
 import os
 
-# Define the directory where your screenshots are stored
-input_dir = '.browserImages/screenshots'
+
+input_dir = 'data/images'
 
 # Define the output directory for resized images
 output_dir = 'training/images'
@@ -18,7 +18,7 @@ def resize_single_image(img_path, output_path, target_size):
     img = img.convert('RGBA') # Convert to RGB if necessary
 
     # Resize the image while maintaining aspect ratio
-    resized_img = img.resize(target_size, resample=Image.ANTIALIAS)
+    resized_img = img.resize(target_size, resample=Image.LANCZOS)
 
     if output_path.endswith('.png'):   
         resized_img.save(output_path)

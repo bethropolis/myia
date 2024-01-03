@@ -5,6 +5,19 @@
 
 }}{% endblock %}
 
+{% block header %}
+
+<style>
+    .text-elipsis {
+        display: inline;
+        width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <main class="responsive" x-data="{ showModal: false, tab: 'uploadFromComputer' }">
     <header class="surface-container-lowest">

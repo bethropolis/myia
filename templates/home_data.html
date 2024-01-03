@@ -18,6 +18,13 @@
     .fit-content {
         width: 30%;
     }
+    .no-model{
+        text-align: center;
+        padding: 20px;
+        font-weight: bold;
+        font-size: 16px;
+        
+    }
 
     @media screen and (max-width: 600px) {
 
@@ -94,12 +101,13 @@
                 </tr>
             </thead>
             <tbody>
+                {% if data.models.data %}
                 {% for model in data.models.data %}
                 <tr>
                     <td class="fit-content">{{ model.name }}</td>
                     <td>{{ ((model.size / (1024 * 1024)) | round(2)) }} MB</td>
-                    <td>{{ (model.evaluation.average_accuracy | round(2)) }}</td>
-                    <td>{{ (model.evaluation.average_loss | round(2)) }}</td>
+                    <td>{{ (model.evaluation.average_accuracy or 0.0) | round(2) }}</td>
+                    <td>{{ (model.evaluation.average_loss or 0.0) | round(2) }}</td>
 
 
                     <td>
@@ -124,6 +132,12 @@
                     </td>
                 </tr>
                 {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" class="no-model">No models</td>
+                </tr>
+                {% endif %}
+
             </tbody>
         </table>
     </div>

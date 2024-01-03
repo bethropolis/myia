@@ -18,3 +18,4 @@ model/user_upload/
 model/model_evaluations.json
 .browserImages/
 model/labeled_images.json
+data/scripts/google-chrome-stable_current_amd64.deb

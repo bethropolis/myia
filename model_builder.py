@@ -19,6 +19,8 @@ def create_model(train_good_dir, train_bad_dir, config):
         dict: A dictionary containing the model name and path, or False on error.
     """
 
+
+
     try:
         # Check directory existence
         if not os.path.exists(train_good_dir) or not os.path.exists(train_bad_dir):
@@ -79,7 +81,7 @@ def create_model(train_good_dir, train_bad_dir, config):
         # Train the model
         model.fit(train_images, train_labels, epochs=config['epochs'])
 
-        model_name = generate_version_name("myia_image_classifier.keras", "model/image_model")
+        model_name = generate_version_name(f"{config['model_name']}.keras", "model/image_model")
         model_path = f"model/image_model/{model_name}"
 
         # Save the model

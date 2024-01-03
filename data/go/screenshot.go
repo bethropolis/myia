@@ -15,8 +15,8 @@ import (
     "github.com/chromedp/chromedp"
 )
 
-const domainListFolder string = "data/list"
-const screenshotDir string = "./data/images"
+const domainListFolder string = "../list"
+const screenshotDir string = "../../.githubasserts"
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
@@ -145,8 +145,22 @@ func generateFileName(domainURL string) string {
 
 
 func screenshot(ctx context.Context, urlstr string, res *[]byte) chromedp.Tasks {
+    options := []chromedp.ExecAllocatorOption{
+        chromedp.Flag("headless", true),
+        chromedp.Flag("disable-gpu", true),
+        // chromedp.WindowSize(1920, 1080), // this line is no longer needed
+    }
+    ctx, cancel := chromedp.NewExecAllocator(ctx, options...)
+    defer cancel()
+
     return chromedp.Tasks{
         chromedp.Navigate(urlstr),
+        chromedp.ActionFunc(func(ctx context.Context) error {
+            // Wait for the page to load completely
+            time.Sleep(4 * time.Second)
+            return nil
+        }),
+        chromedp.EmulateViewport(1244, 626), // Set the viewport size explicitly
         chromedp.CaptureScreenshot(res),
     }
 }

@@ -8,14 +8,13 @@ import (
 	"os"
 	"strings"
 	"time"
-
 	"github.com/PuerkitoBio/goquery"
 )
 
 
 
 func main() {
-	file, err := os.Open("list.json")
+	file, err := os.Open("../list/list.json")
 	if err != nil {
 		fmt.Printf("Failed to open JSON file: %v\n", err)
 		return

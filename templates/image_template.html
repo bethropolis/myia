@@ -12,7 +12,7 @@ hx-indicator=".htmx-indicator"
     <img class="responsive medium" loading="lazy" src="{{ image_url }}">
     <div class="absolute bottom left right padding bottom-shadow white-text">
       <nav>
-        <h6  style="width:120px;" >{{ title }}</h6>
+        <h6 class="text-elipsis">{{ title }}</h6>
         <div class="max"></div>
         <button class="circle transparent" @click="label_bad('{{ image_url }}','train')" x-on:click="unlabled = false">
           <i>thumb_down</i>

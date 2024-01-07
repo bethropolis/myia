@@ -9,6 +9,7 @@ this is a nocode platform for training, testing, evaluating, and building image 
 - [Installation](#installation)
 - [Usage](#usage)
 - [Screenshots](#screenshots)
+- [packages used](#packages-used)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -136,12 +137,21 @@ this is a nocode platform for training, testing, evaluating, and building image 
 
 
 ---
+## packages used
+- [Flask](https://flask.palletsprojects.com/)
+- [Pillow](https://pillow.readthedocs.io/en/stable/)
+- [Tensorflow](https://www.tensorflow.org/)
+- [Keras](https://keras.io/)
+- [Numpy](https://numpy.org/doc/stable/user/whatisnumpy.html)
+- [matplotlib](https://matplotlib.org/)
+- [chromedp](https://github.com/chromedp/chromedp)
+- [goquery](https://github.com/PuerkitoBio/goquery)
+
+
+---
 
 ## Contributing
 Feel free to ping me a pull requests if you want to contribute.
-
-
-
 
 ## License
 

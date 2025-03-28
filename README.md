@@ -1,5 +1,6 @@
 # MYIA
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fbethropolis%2Fmyia.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fbethropolis%2Fmyia?ref=badge_shield)
+
 this is a nocode platform for training, testing, evaluating, and building image classifier models 
 
 

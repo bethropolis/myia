@@ -1,6 +1,6 @@
 module github.com/bethropolis/simple-image-classifier
 
-go 1.21.5
+go 1.25.0
 
 require (
 	github.com/PuerkitoBio/goquery v1.8.1
@@ -16,6 +16,6 @@ require (
 	github.com/gobwas/ws v1.3.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	golang.org/x/net v0.23.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
+	golang.org/x/sys v0.45.0 // indirect
 )
